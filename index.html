@@ -1,0 +1,1083 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BPO-Logistics Sector Survey</title>
+<style>
+  :root{
+    --bg:#f4f6f9; --card:#ffffff; --ink:#1a2230; --muted:#5b6779;
+    --line:#e2e7ef; --accent:#0f6f8c; --accent-ink:#ffffff;
+    --accent-soft:#e6f2f5; --warn:#8a3ffc; --danger:#b3261e;
+    --radius:14px; --shadow:0 1px 3px rgba(16,32,48,.06),0 8px 24px rgba(16,32,48,.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0f1520; --card:#161d2b; --ink:#e8edf5; --muted:#9aa7ba;
+      --line:#26303f; --accent:#37b0cf; --accent-ink:#08131a;
+      --accent-soft:#16303a; --warn:#c39bff; --danger:#ff6b64;
+      --shadow:0 1px 3px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent)}
+  header.top{position:sticky;top:0;z-index:20;background:var(--card);
+    border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+  .top-inner{max-width:860px;margin:0 auto;padding:12px 20px;display:flex;
+    align-items:center;gap:12px;flex-wrap:wrap}
+  .brand{display:flex;flex-direction:column;flex:1;min-width:180px}
+  .brand b{font-size:16px;letter-spacing:.2px}
+  .brand span{font-size:12px;color:var(--muted)}
+  .langsw{display:flex;gap:4px;background:var(--bg);border:1px solid var(--line);
+    border-radius:999px;padding:3px}
+  .langsw button{border:0;background:transparent;color:var(--muted);
+    padding:6px 12px;border-radius:999px;cursor:pointer;font-size:13px;font-weight:600}
+  .langsw button.active{background:var(--accent);color:var(--accent-ink)}
+  main{max-width:860px;margin:0 auto;padding:26px 20px 120px}
+  .hero{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:22px 22px 20px;box-shadow:var(--shadow);margin-bottom:22px}
+  .hero h1{margin:0 0 6px;font-size:22px}
+  .hero p{margin:6px 0;color:var(--muted);font-size:14.5px}
+  .badge{display:inline-flex;align-items:center;gap:7px;background:var(--accent-soft);
+    color:var(--accent);border-radius:999px;padding:5px 12px;font-size:12.5px;
+    font-weight:700;margin-bottom:12px}
+  .anon{border:1px dashed var(--line);background:var(--bg);border-radius:12px;
+    padding:12px 14px;font-size:13.5px;color:var(--muted);margin-top:14px}
+  .section{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px 22px;box-shadow:var(--shadow);margin-bottom:18px}
+  .section>h2{margin:0 0 4px;font-size:17px;display:flex;align-items:center;gap:10px}
+  .section .kicker{color:var(--accent);font-weight:800;font-size:12px;letter-spacing:1px;
+    text-transform:uppercase}
+  .section .sintro{color:var(--muted);font-size:13.5px;margin:2px 0 6px}
+  .q{padding:16px 0;border-top:1px solid var(--line)}
+  .q:first-of-type{border-top:0}
+  .q>label.qlabel,.q>.qlabel{display:block;font-weight:650;font-size:15px;margin-bottom:9px}
+  .q .help{color:var(--muted);font-size:12.8px;margin:-4px 0 9px}
+  .req{color:var(--danger);font-weight:700}
+  .opts{display:flex;flex-direction:column;gap:8px}
+  .opt{display:flex;align-items:flex-start;gap:10px;border:1px solid var(--line);
+    border-radius:10px;padding:9px 12px;cursor:pointer;background:var(--bg);
+    transition:border-color .12s,background .12s}
+  .opt:hover{border-color:var(--accent)}
+  .opt input{margin-top:3px;accent-color:var(--accent);width:16px;height:16px;flex:none}
+  .opt.checked{border-color:var(--accent);background:var(--accent-soft)}
+  .opt span{font-size:14px}
+  input[type=number],input[type=text],textarea,select{
+    width:100%;border:1px solid var(--line);border-radius:10px;background:var(--bg);
+    color:var(--ink);padding:10px 12px;font-size:14px;font-family:inherit}
+  input[type=number]{max-width:180px}
+  textarea{min-height:82px;resize:vertical}
+  input:focus,textarea:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px}
+  .gridwrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+  table.grid{border-collapse:collapse;width:100%;min-width:420px;font-size:13.5px}
+  table.grid th,table.grid td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left}
+  table.grid thead th{background:var(--bg);color:var(--muted);font-size:12px;
+    font-weight:700;position:sticky;top:0}
+  table.grid td.num{width:110px}
+  table.grid input[type=number]{max-width:92px;padding:7px 8px}
+  table.grid.scale th.sc,table.grid.scale td.sc{text-align:center;width:1%;white-space:nowrap}
+  table.grid.scale td.sc input{accent-color:var(--accent)}
+  table.grid tr:last-child td{border-bottom:0}
+  .rolebar{display:flex;flex-wrap:wrap;gap:9px}
+  .rolebar .opt{flex:1 1 220px}
+  .hidden{display:none!important}
+  .footer-actions{position:fixed;left:0;right:0;bottom:0;background:var(--card);
+    border-top:1px solid var(--line);box-shadow:0 -4px 20px rgba(16,32,48,.08);z-index:15}
+  .fa-inner{max-width:860px;margin:0 auto;padding:12px 20px;display:flex;
+    align-items:center;gap:14px;flex-wrap:wrap}
+  .fa-inner .msg{flex:1;font-size:13px;color:var(--muted);min-width:160px}
+  .btn{border:0;border-radius:10px;padding:12px 20px;font-size:14.5px;font-weight:700;
+    cursor:pointer;background:var(--accent);color:var(--accent-ink)}
+  .btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .thanks{text-align:center;padding:40px 20px}
+  .thanks .big{font-size:46px;margin-bottom:10px}
+  .thanks h2{margin:0 0 8px}
+  .thanks p{color:var(--muted)}
+  .toast{position:fixed;bottom:78px;left:50%;transform:translateX(-50%);
+    background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;
+    font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:30}
+  .toast.show{opacity:1}
+  .invalid{border-color:var(--danger)!important}
+  .scale-legend{font-size:11.5px;color:var(--muted);margin-top:6px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <b id="brandTitle">BPO-Logistics Sector Survey</b>
+      <span id="brandSub">Anonymous · for evidence-based regulation</span>
+    </div>
+    <div class="langsw" role="group" aria-label="Language">
+      <button data-lang="en" class="active">EN</button>
+      <button data-lang="ru">RU</button>
+      <button data-lang="uz">O‘Z</button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" id="hero"></section>
+  <div id="form"></div>
+</main>
+
+<div class="footer-actions" id="footerActions">
+  <div class="fa-inner">
+    <div class="msg" id="footMsg"></div>
+    <button class="btn" id="submitBtn"></button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================================
+   CONFIG — where responses go.
+
+   To collect into a Google Sheet:
+     1. Follow google-sheets/SETUP.md (create sheet, paste Code.gs, deploy).
+     2. Paste your Web App URL (ends with /exec) below.
+   If submitEndpoint stays null, submissions download as an anonymous JSON file
+   instead (offline fallback — also used automatically if the Sheet is unreachable).
+   ========================================================================== */
+var CONFIG = { submitEndpoint: "https://script.google.com/macros/s/AKfycbzoPtY5x0HqvircICSStYAwrtrcibYPsVyGiF0kDHD_-SmAV_KvN1frN5muMsCWEIS3/exec" };
+
+/* ---- helpers to keep the schema compact ---- */
+function L(en, ru, uz){ return {en:en, ru:ru, uz:uz}; }
+function O(value, en, ru, uz){ return {value:value, label:L(en, ru, uz)}; }
+
+/* ---- reusable scales ---- */
+var SCALE_COMMON = [
+  O("very_rare","Very rare","Очень редко","Juda kam"),
+  O("rare","Rare","Редко","Kam"),
+  O("sometimes","Sometimes","Иногда","Ba’zan"),
+  O("common","Common","Часто","Ko‘p"),
+  O("very_common","Very common","Очень часто","Juda ko‘p"),
+  O("dont_know","Don’t know","Не знаю","Bilmayman")
+];
+var SCALE_AGREE = [
+  O("sd","Strongly disagree","Категорически не согласен","Mutlaqo qo‘shilmayman"),
+  O("d","Disagree","Не согласен","Qo‘shilmayman"),
+  O("n","Neutral","Нейтрально","Betaraf"),
+  O("a","Agree","Согласен","Qo‘shilaman"),
+  O("sa","Strongly agree","Полностью согласен","To‘liq qo‘shilaman")
+];
+var SCALE_SEV = [
+  O("none","Not a problem","Не проблема","Muammo emas"),
+  O("minor","Minor","Незначительная","Kichik"),
+  O("moderate","Moderate","Умеренная","O‘rtacha"),
+  O("serious","Serious","Серьёзная","Jiddiy"),
+  O("severe","Severe","Критическая","Juda jiddiy")
+];
+var SCALE_SUPPORT = [
+  O("strong_oppose","Strongly oppose","Категорически против","Mutlaqo qarshi"),
+  O("oppose","Oppose","Против","Qarshi"),
+  O("neutral","Neutral","Нейтрально","Betaraf"),
+  O("support","Support","За","Tarafdorman"),
+  O("strong_support","Strongly support","Полностью за","To‘liq tarafdorman")
+];
+var SCALE_FAMILIAR = [
+  O("not","Not at all","Совсем не знаком","Umuman tanish emas"),
+  O("little","A little","Немного","Ozgina"),
+  O("somewhat","Somewhat","Отчасти","Qisman"),
+  O("well","Well","Хорошо","Yaxshi"),
+  O("very","Very familiar","Очень хорошо","Juda yaxshi")
+];
+
+/* ---- roles ---- */
+var ROLES = [
+  {key:"dispatcher", label:L("Dispatcher","Диспетчер","Dispetcher")},
+  {key:"teamlead",   label:L("Team lead / Operations manager","Руководитель группы / операционный менеджер","Guruh rahbari / operatsion menejer")},
+  {key:"owner",      label:L("Company owner / CEO / Founder","Владелец / директор / учредитель компании","Kompaniya egasi / rahbari / ta’sischisi")},
+  {key:"carrier",    label:L("Carrier / Truck owner (MC holder)","Перевозчик / владелец грузовиков (держатель MC)","Tashuvchi / yuk mashina egasi (MC egasi)")},
+  {key:"broker",     label:L("Freight broker","Фрахтовый брокер","Yuk brokeri")},
+  {key:"backoffice", label:L("Back office (Safety / Compliance / Billing / Accounting)","Бэк-офис (Safety / комплаенс / биллинг / бухгалтерия)","Back-office (Safety / komplayens / billing / buxgalteriya)")},
+  {key:"other",      label:L("Other","Другое","Boshqa")}
+];
+var DISP = ["dispatcher","teamlead"]; // shares dispatcher-ops questions
+
+/* ============================================================================
+   SURVEY SCHEMA
+   type: info | single | multi | number | text | textarea | scale
+         grid-number (rows+one number col) | grid-scale (rows x scale)
+   roles: array of role keys, or "all"
+   showIf(a): optional predicate on answers
+   ========================================================================== */
+var SURVEY = [
+
+/* ---------- S1 : PROFILE ---------- */
+{
+  id:"s1", roles:"all",
+  kicker:L("Section 1","Раздел 1","1-bo‘lim"),
+  title:L("About you and your work","О вас и вашей работе","Siz va faoliyatingiz haqida"),
+  intro:L("No names, no company names — only your role and how your operation works.",
+          "Без имён и названий компаний — только ваша роль и то, как устроена работа.",
+          "Ism va kompaniya nomlarisiz — faqat rolingiz va ish qanday tashkil etilgani."),
+  questions:[
+    {id:"role", type:"single", required:true, roles:"all", control:"rolebar",
+     label:L("Your role in the BPO-logistics sector","Ваша роль в секторе BPO-логистики","BPO-logistika sohasidagi rolingiz"),
+     options: ROLES.map(function(r){return {value:r.key,label:r.label};})},
+
+    {id:"role_other", type:"text", roles:"all", showIf:function(a){return a.role==="other";},
+     label:L("Please specify your role","Уточните вашу роль","Rolingizni aniqlashtiring")},
+
+    {id:"experience", type:"single", roles:"all",
+     label:L("How long have you worked in US BPO-logistics?","Как долго вы работаете в BPO-логистике США?","AQSh BPO-logistikasida qancha vaqtdan beri ishlaysiz?"),
+     options:[
+       O("lt1","Less than 1 year","Менее 1 года","1 yildan kam"),
+       O("1_2","1–2 years","1–2 года","1–2 yil"),
+       O("3_5","3–5 years","3–5 лет","3–5 yil"),
+       O("6p","6+ years","6+ лет","6+ yil")]},
+
+    {id:"company_type", type:"single", roles:"all",
+     label:L("Which best describes your organization?","Что лучше всего описывает вашу организацию?","Tashkilotingizni qaysi biri yaxshiroq ifodalaydi?"),
+     options:[
+       O("itpark","Uzbek dispatch/BPO company — IT-Park resident","Узбекская диспетчерская/BPO-компания — резидент IT-Park","O‘zbek dispetcherlik/BPO kompaniyasi — IT-Park rezidenti"),
+       O("uz_noitpark","Uzbek company — not an IT-Park resident","Узбекская компания — не резидент IT-Park","O‘zbek kompaniyasi — IT-Park rezidenti emas"),
+       O("us_owned","US-registered company owned by Uzbek(s)","Компания, зарегистрированная в США, с узбекскими владельцами","AQShda ro‘yxatdan o‘tgan, o‘zbek egalariga tegishli kompaniya"),
+       O("freelancer","Freelancer / individual","Фрилансер / частное лицо","Frilanser / jismoniy shaxs"),
+       O("other","Other","Другое","Boshqa")]},
+
+    {id:"region", type:"single", roles:"all",
+     label:L("Region you work from (optional)","Регион, из которого вы работаете (необязательно)","Ishlayotgan hududingiz (ixtiyoriy)"),
+     help:L("Kept broad to protect anonymity.","Указывается обобщённо для анонимности.","Anonimlik uchun umumiy ko‘rsatiladi."),
+     options:[
+       O("tashkent_city","Tashkent city","город Ташкент","Toshkent shahri"),
+       O("tashkent_reg","Tashkent region","Ташкентская область","Toshkent viloyati"),
+       O("samarkand","Samarkand","Самарканд","Samarqand"),
+       O("bukhara","Bukhara / Navoi","Бухара / Навои","Buxoro / Navoiy"),
+       O("ferghana","Fergana valley (Andijan/Fergana/Namangan)","Ферганская долина (Андижан/Фергана/Наманган)","Farg‘ona vodiysi (Andijon/Farg‘ona/Namangan)"),
+       O("khorezm","Khorezm / Karakalpakstan","Хорезм / Каракалпакстан","Xorazm / Qoraqalpog‘iston"),
+       O("south","Kashkadarya / Surkhandarya","Кашкадарья / Сурхандарья","Qashqadaryo / Surxondaryo"),
+       O("central","Jizzakh / Syrdarya","Джизак / Сырдарья","Jizzax / Sirdaryo"),
+       O("abroad","Outside Uzbekistan / fully remote","За пределами Узбекистана / полностью удалённо","O‘zbekistondan tashqarida / to‘liq masofaviy"),
+       O("na","Prefer not to say","Не хочу указывать","Aytishni istamayman")]},
+
+    {id:"team_size", type:"single", roles:"all",
+     label:L("How many people work in your company?","Сколько человек работает в вашей компании?","Kompaniyangizda nechta odam ishlaydi?"),
+     options:[
+       O("solo","Just me","Только я","Faqat men"),
+       O("2_5","2–5","2–5","2–5"),
+       O("6_20","6–20","6–20","6–20"),
+       O("21_50","21–50","21–50","21–50"),
+       O("51_100","51–100","51–100","51–100"),
+       O("100p","More than 100","Более 100","100 dan ortiq")]},
+
+    {id:"services", type:"multi", roles:"all",
+     label:L("Which services does your company provide? (select all)","Какие услуги оказывает ваша компания? (выберите все)","Kompaniyangiz qanday xizmatlar ko‘rsatadi? (barchasini tanlang)"),
+     options:[
+       O("dispatch","Truck dispatching","Диспетчеризация грузовиков","Yuk mashinalarini dispetcherlash"),
+       O("safety","Safety / DOT compliance","Safety / соответствие DOT","Safety / DOT muvofiqligi"),
+       O("billing","Billing / invoicing / factoring","Биллинг / выставление счетов / факторинг","Billing / hisob-faktura / faktoring"),
+       O("brokerage","Freight brokerage","Фрахтовый брокеридж","Yuk brokerligi"),
+       O("onboarding","Carrier packet / onboarding","Оформление перевозчиков / онбординг","Tashuvchilarni rasmiylashtirish / onboarding"),
+       O("accounting","Accounting / payroll","Бухгалтерия / расчёт зарплат","Buxgalteriya / ish haqi"),
+       O("recruiting","Driver recruiting / HR","Найм водителей / HR","Haydovchilarni yollash / HR"),
+       O("eld","ELD / telematics","ELD / телематика","ELD / telematika"),
+       O("it","Software / IT for carriers","ПО / IT для перевозчиков","Tashuvchilar uchun dasturiy ta’minot / IT"),
+       O("sales","Sales / lead generation","Продажи / лидогенерация","Sotuv / lead generatsiya"),
+       O("other","Other","Другое","Boshqa")]},
+
+    {id:"pay_model", type:"multi", roles:"all",
+     label:L("How is your company / role paid?","Как оплачивается работа вашей компании / ваша работа?","Kompaniyangiz / ishingiz qanday to‘lanadi?"),
+     options:[
+       O("pct_load","% of load revenue","% от выручки за груз","Yuk daromadidan %"),
+       O("flat_truck","Flat fee per truck / week","Фикс. плата за грузовик / неделю","Har mashina / hafta uchun belgilangan haq"),
+       O("per_load","Fixed fee per load","Фикс. плата за груз","Har yuk uchun belgilangan haq"),
+       O("salary","Salary / hourly","Оклад / почасовая","Oylik / soatbay"),
+       O("mixed","Mixed","Смешанная","Aralash")]},
+
+    {id:"shift", type:"single", roles:"all",
+     label:L("Which hours do you mostly work?","В какие часы вы в основном работаете?","Asosan qaysi soatlarda ishlaysiz?"),
+     options:[
+       O("us_night","US hours (night in Uzbekistan)","Часы США (ночь в Узбекистане)","AQSh vaqti (O‘zbekistonda tun)"),
+       O("day","Uzbekistan daytime","Дневное время Узбекистана","O‘zbekiston kunduzi"),
+       O("mixed","Mixed / shifts","Смешанно / посменно","Aralash / smenali")]}
+  ]
+},
+
+/* ---------- S2 : OPERATIONS (role-specific) ---------- */
+{
+  id:"s2", roles:"all",
+  kicker:L("Section 2","Раздел 2","2-bo‘lim"),
+  title:L("How your operation works","Как устроена ваша работа","Ishingiz qanday tashkil etilgan"),
+  intro:L("These questions change depending on your role.","Эти вопросы меняются в зависимости от вашей роли.","Bu savollar rolingizga qarab o‘zgaradi."),
+  questions:[
+    /* dispatcher / team lead */
+    {id:"d_trucks", type:"number", roles:DISP, min:0,
+     label:L("On average, how many trucks / drivers do you dispatch at the same time?","В среднем, сколько грузовиков / водителей вы ведёте одновременно?","O‘rtacha bir vaqtda nechta mashina / haydovchini dispetcherlaysiz?")},
+    {id:"d_loads", type:"number", roles:DISP, min:0,
+     label:L("About how many loads do you book per week?","Примерно сколько грузов вы бронируете в неделю?","Haftasiga taxminan nechta yuk bron qilasiz?")},
+    {id:"d_findloads", type:"multi", roles:DISP,
+     label:L("Where do you find loads?","Где вы находите грузы?","Yuklarni qayerdan topasiz?"),
+     options:[
+       O("dat","DAT","DAT","DAT"),
+       O("truckstop","Truckstop","Truckstop","Truckstop"),
+       O("highway","Highway / RMIS","Highway / RMIS","Highway / RMIS"),
+       O("direct_broker","Direct broker relationships","Прямые контакты с брокерами","Brokerlar bilan bevosita aloqa"),
+       O("company_loads","Loads given by my company","Грузы, которые даёт моя компания","Kompaniyam beradigan yuklar"),
+       O("shipper_direct","Direct shipper contracts","Прямые контракты с грузоотправителями","Yuk jo‘natuvchilar bilan bevosita shartnoma"),
+       O("other","Other","Другое","Boshqa")]},
+    {id:"d_whose_mc", type:"single", roles:DISP,
+     label:L("Under whose operating authority (MC) do you usually book loads?","Под чьей операционной лицензией (MC) вы обычно бронируете грузы?","Odatda yuklarni kimning MC ruxsatnomasi ostida bron qilasiz?"),
+     help:L("Helps us understand how authority is used in practice.","Помогает понять, как на практике используется лицензия.","Amalda ruxsatnoma qanday ishlatilishini tushunishga yordam beradi."),
+     options:[
+       O("carrier_own","The carrier’s own MC","Собственный MC перевозчика","Tashuvchining o‘z MC’si"),
+       O("company_mc","My dispatch company’s MC","MC моей диспетчерской компании","Dispetcherlik kompaniyamning MC’si"),
+       O("client_mc","A client’s MC","MC клиента","Mijozning MC’si"),
+       O("varies","It varies","По-разному","Har xil")]},
+    {id:"d_verify", type:"multi", roles:DISP,
+     label:L("How do you check a broker or shipper before hauling? (select all)","Как вы проверяете брокера или грузоотправителя перед перевозкой? (выберите все)","Yuk tashishdan oldin broker yoki jo‘natuvchini qanday tekshirasiz? (barchasini tanlang)"),
+     options:[
+       O("mc_lookup","FMCSA / SAFER MC lookup","Проверка MC в FMCSA / SAFER","FMCSA / SAFER orqali MC tekshiruvi"),
+       O("carrier411","Carrier411 / RMIS / MyCarrierPortal","Carrier411 / RMIS / MyCarrierPortal","Carrier411 / RMIS / MyCarrierPortal"),
+       O("credit","Broker credit score / days-to-pay","Кредитный рейтинг брокера / срок оплаты","Broker kredit reytingi / to‘lov muddati"),
+       O("factoring","Factoring company approval","Одобрение факторинговой компании","Faktoring kompaniyasi tasdiqlashi"),
+       O("call","Call back on a verified number","Обратный звонок на проверенный номер","Tasdiqlangan raqamga qayta qo‘ng‘iroq"),
+       O("company_handles","My company handles verification","Проверку делает моя компания","Tekshiruvni kompaniyam bajaradi"),
+       O("none","No formal check","Формальной проверки нет","Rasmiy tekshiruv yo‘q")]},
+    {id:"d_docs", type:"multi", roles:DISP,
+     label:L("Which documents do you personally handle? (select all)","С какими документами вы лично работаете? (выберите все)","Qaysi hujjatlar bilan shaxsan ishlaysiz? (barchasini tanlang)"),
+     options:[
+       O("ratecon","Rate confirmations","Подтверждения ставок","Rate confirmation"),
+       O("bol","BOL (Bill of Lading)","BOL (товарно-транспортная накладная)","BOL (yuk xati)"),
+       O("pod","POD (Proof of Delivery)","POD (подтверждение доставки)","POD (yetkazish tasdig‘i)"),
+       O("invoice","Invoicing","Выставление счетов","Hisob-faktura"),
+       O("none","None","Никакими","Hech qaysi")]},
+
+    /* owner / CEO */
+    {id:"o_employees", type:"number", roles:["owner"], min:0,
+     label:L("How many people does your company employ?","Сколько человек работает в вашей компании?","Kompaniyangizda nechta xodim bor?")},
+    {id:"o_carriers", type:"number", roles:["owner"], min:0,
+     label:L("How many carriers / trucks does your company serve?","Сколько перевозчиков / грузовиков обслуживает ваша компания?","Kompaniyangiz nechta tashuvchi / mashinaga xizmat qiladi?")},
+    {id:"o_reg", type:"multi", roles:["owner"],
+     label:L("Where is your business registered? (select all)","Где зарегистрирован ваш бизнес? (выберите все)","Biznesingiz qayerda ro‘yxatdan o‘tgan? (barchasini tanlang)"),
+     options:[
+       O("uz_llc","Uzbekistan LLC (MChJ)","ООО в Узбекистане (МЧЖ)","O‘zbekiston MChJ"),
+       O("itpark","IT-Park resident","Резидент IT-Park","IT-Park rezidenti"),
+       O("us_llc","US LLC / Corp","LLC / Corp в США","AQSh LLC / Corp"),
+       O("none","No formal registration","Без формальной регистрации","Rasmiy ro‘yxatsiz")]},
+    {id:"o_own_mc", type:"single", roles:["owner"],
+     label:L("Does your company hold US operating authority (MC/DOT)?","Есть ли у вашей компании операционная лицензия США (MC/DOT)?","Kompaniyangizda AQSh operatsion ruxsatnomasi (MC/DOT) bormi?"),
+     options:[
+       O("many","Yes, several","Да, несколько","Ha, bir nechta"),
+       O("one","Yes, one","Да, одна","Ha, bitta"),
+       O("via_client","No — we work under clients’ authority","Нет — работаем под лицензией клиентов","Yo‘q — mijozlar ruxsatnomasi ostida ishlaymiz"),
+       O("no","No","Нет","Yo‘q")]},
+    {id:"o_revenue", type:"single", roles:["owner"],
+     label:L("Approximate annual revenue (USD)","Примерная годовая выручка (USD)","Taxminiy yillik daromad (USD)"),
+     options:[
+       O("lt100k","Under $100k","До $100 тыс.","$100 mingdan kam"),
+       O("100_500k","$100k–$500k","$100–500 тыс.","$100–500 ming"),
+       O("500k_1m","$500k–$1M","$500 тыс.–$1 млн","$500 ming–$1 mln"),
+       O("1_5m","$1M–$5M","$1–5 млн","$1–5 mln"),
+       O("5mp","$5M+","$5 млн+","$5 mln+"),
+       O("na","Prefer not to say","Не хочу указывать","Aytishni istamayman")]},
+    {id:"o_clients", type:"multi", roles:["owner"],
+     label:L("How do you find clients? (select all)","Как вы находите клиентов? (выберите все)","Mijozlarni qanday topasiz? (barchasini tanlang)"),
+     options:[
+       O("referral","Referrals / word of mouth","Рекомендации / сарафанное радио","Tavsiyalar / og‘zaki"),
+       O("broker_direct","US brokers directly","Напрямую брокеры США","AQSh brokerlari bevosita"),
+       O("loadboards","Load boards","Биржи грузов","Yuk birjalari"),
+       O("marketplace","Upwork / freelance marketplaces","Upwork / фриланс-площадки","Upwork / frilans platformalari"),
+       O("cold","Cold outreach / ads","Холодные продажи / реклама","Sovuq murojaat / reklama"),
+       O("agency","Through an agency / partner","Через агентство / партнёра","Agentlik / hamkor orqali")]},
+    {id:"o_compliance", type:"multi", roles:["owner"],
+     label:L("What compliance measures do you have in place? (select all)","Какие меры комплаенса у вас внедрены? (выберите все)","Qanday komplayens choralari joriy qilingan? (barchasini tanlang)"),
+     options:[
+       O("contracts","Written contracts with every client","Письменные договоры с каждым клиентом","Har bir mijoz bilan yozma shartnoma"),
+       O("kyc","KYC / verifying who clients are","KYC / проверка клиентов","KYC / mijozlarni tekshirish"),
+       O("insurance","Verifying insurance certificates","Проверка страховых сертификатов","Sug‘urta sertifikatlarini tekshirish"),
+       O("training","Anti-fraud training for staff","Антифрод-обучение сотрудников","Xodimlarga firibgarlikka qarshi trening"),
+       O("monitoring","Monitoring / recording work","Мониторинг / запись работы","Ishni monitoring / yozib olish"),
+       O("policy","Written code of conduct","Письменный кодекс поведения","Yozma xulq-atvor kodeksi"),
+       O("none","None yet","Пока нет","Hozircha yo‘q")]},
+
+    /* carrier / MC */
+    {id:"c_trucks", type:"number", roles:["carrier"], min:0,
+     label:L("How many trucks do you operate?","Сколько грузовиков вы эксплуатируете?","Nechta mashina ishlatasiz?")},
+    {id:"c_mc_count", type:"number", roles:["carrier"], min:0,
+     label:L("How many MC authorities do you hold?","Сколько лицензий MC у вас есть?","Sizda nechta MC ruxsatnomasi bor?")},
+    {id:"c_mc_age", type:"single", roles:["carrier"],
+     label:L("How old is your main MC authority?","Какой возраст у вашей основной лицензии MC?","Asosiy MC ruxsatnomangiz yoshi qancha?"),
+     options:[
+       O("lt6m","Under 6 months","Менее 6 месяцев","6 oydan kam"),
+       O("6_12m","6–12 months","6–12 месяцев","6–12 oy"),
+       O("1_3y","1–3 years","1–3 года","1–3 yil"),
+       O("3py","3+ years","3+ лет","3+ yil")]},
+    {id:"c_dispatch", type:"single", roles:["carrier"],
+     label:L("Who dispatches your trucks?","Кто занимается диспетчеризацией ваших грузовиков?","Mashinalaringizni kim dispetcherlaydi?"),
+     options:[
+       O("inhouse","In-house / myself","Собственными силами / сам","O‘zim / ichki xodim"),
+       O("uz_dispatch","An Uzbek dispatch company","Узбекская диспетчерская компания","O‘zbek dispetcherlik kompaniyasi"),
+       O("us_dispatch","A US dispatch company","Диспетчерская компания в США","AQSh dispetcherlik kompaniyasi"),
+       O("mixed","Mixed","Смешанно","Aralash")]},
+    {id:"c_acquired", type:"single", roles:["carrier"],
+     label:L("Have you ever bought an existing company or MC authority rather than starting fresh?","Приходилось ли вам покупать готовую компанию или лицензию MC вместо создания с нуля?","Noldan boshlash o‘rniga tayyor kompaniya yoki MC ruxsatnomasini sotib olganmisiz?"),
+     help:L("Common in the market; asked to understand company history, not to judge.","Распространено на рынке; спрашиваем, чтобы понять историю компаний, без осуждения.","Bozorda keng tarqalgan; kompaniyalar tarixini tushunish uchun, baho bermaymiz."),
+     options:[
+       O("yes","Yes","Да","Ha"),
+       O("considered","Considered it","Рассматривал","O‘yladim"),
+       O("no","No","Нет","Yo‘q")]},
+
+    /* broker */
+    {id:"b_bond", type:"single", roles:["broker"],
+     label:L("Do you operate on your own BMC-84 broker bond / authority?","Работаете ли вы на собственной брокерской гарантии BMC-84 / лицензии?","O‘zingizning BMC-84 broker kafolati / ruxsatnomangiz bilan ishlaysizmi?"),
+     options:[
+       O("own","Yes, my own","Да, собственная","Ha, o‘zimniki"),
+       O("another","No, I use another company’s authority","Нет, использую чужую лицензию","Yo‘q, boshqa kompaniya ruxsatnomasidan foydalanaman"),
+       O("none","No authority","Лицензии нет","Ruxsatnoma yo‘q")]},
+    {id:"b_loads", type:"number", roles:["broker"], min:0,
+     label:L("About how many loads do you broker per month?","Примерно сколько грузов вы брокеруете в месяц?","Oyiga taxminan nechta yukni brokerlaysiz?")},
+    {id:"b_rebroker", type:"single", roles:["broker"],
+     label:L("Do you ever co-broker or re-assign a load to another carrier/broker?","Случается ли вам ко-брокеровать или переуступать груз другому перевозчику/брокеру?","Yukni boshqa tashuvchi/brokerga qayta topshirasizmi (ko-brokerlik)?"),
+     help:L("Re-brokering with disclosure and consent is legal; hidden re-brokering is not. We want to understand real practice.","Переуступка с уведомлением и согласием законна; скрытая — нет. Мы хотим понять реальную практику.","Xabar berib va rozilik bilan qayta topshirish qonuniy; yashirin qilingani — yo‘q. Haqiqiy amaliyotni tushunmoqchimiz."),
+     options:[
+       O("never","Never","Никогда","Hech qachon"),
+       O("with_consent","Only with the shipper’s consent","Только с согласия грузоотправителя","Faqat jo‘natuvchi roziligi bilan"),
+       O("sometimes","Sometimes, when needed","Иногда, при необходимости","Ba’zan, zarur bo‘lganda"),
+       O("varies","Depends on the situation","Зависит от ситуации","Vaziyatga bog‘liq")]},
+
+    /* backoffice / other */
+    {id:"gen_role_desc", type:"textarea", roles:["backoffice","other"],
+     label:L("Briefly, what does your day-to-day work involve?","Кратко, из чего состоит ваша повседневная работа?","Qisqacha, kundalik ishingiz nimadan iborat?")}
+  ]
+},
+
+/* ---------- S3 : INCIDENTS ---------- */
+{
+  id:"s3", roles:"all",
+  kicker:L("Section 3","Раздел 3","3-bo‘lim"),
+  title:L("Incidents in the last 12 months","Инциденты за последние 12 месяцев","So‘nggi 12 oydagi hodisalar"),
+  intro:L("Please give exact numbers where you can. If none, enter 0.","По возможности указывайте точные числа. Если ничего не было — поставьте 0.","Iloji bo‘lsa aniq raqam kiriting. Bo‘lmagan bo‘lsa — 0 qo‘ying."),
+  questions:[
+    {id:"inc_any", type:"single", roles:"all",
+     label:L("In the last 12 months, did you or your company face any fraud, theft, non-payment or serious dispute?","За последние 12 месяцев сталкивались ли вы или ваша компания с мошенничеством, кражей, неоплатой или серьёзным спором?","So‘nggi 12 oyda siz yoki kompaniyangiz firibgarlik, o‘g‘irlik, to‘lovsizlik yoki jiddiy nizoga duch keldingizmi?"),
+     options:[
+       O("yes","Yes","Да","Ha"),
+       O("no","No","Нет","Yo‘q"),
+       O("unsure","Not sure","Не уверен","Ishonchim komil emas")]},
+
+    {id:"inc_counts", type:"grid-number", roles:"all",
+     label:L("How many times did each of these happen in the last 12 months?","Сколько раз каждое из этого случилось за последние 12 месяцев?","Quyidagilarning har biri so‘nggi 12 oyda necha marta yuz berdi?"),
+     help:L("Enter a number for each row (0 if it never happened).","Впишите число для каждой строки (0, если не было).","Har bir qator uchun raqam kiriting (bo‘lmagan bo‘lsa 0)."),
+     rows:[
+       O("nonpay_broker","A broker / client did not pay you","Брокер / клиент не заплатил вам","Broker / mijoz sizga to‘lamadi"),
+       O("nonpay_carrier","A carrier / company you worked for did not pay you","Перевозчик / компания, на которую вы работали, не заплатил(а)","Siz ishlagan tashuvchi / kompaniya to‘lamadi"),
+       O("double_brokered","You were a victim of double brokering","Вы стали жертвой двойного брокериджа","Ikki tomonlama brokerlik qurboni bo‘ldingiz"),
+       O("cargo_theft","Cargo / a load was stolen","Груз был украден","Yuk o‘g‘irlandi"),
+       O("load_missing","A load disappeared / was not delivered","Груз пропал / не был доставлен","Yuk yo‘qoldi / yetkazilmadi"),
+       O("identity_stolen","Your MC/DOT identity was stolen or misused","Ваши данные MC/DOT украдены или использованы","MC/DOT ma’lumotlaringiz o‘g‘irlandi yoki suiiste’mol qilindi"),
+       O("impersonated","Someone impersonated your company","Кто-то выдавал себя за вашу компанию","Kimdir kompaniyangiz nomidan ish tutdi"),
+       O("bec","Email hacked / payment details changed (BEC)","Взлом почты / подмена платёжных реквизитов (BEC)","Pochta buzildi / to‘lov rekvizitlari o‘zgartirildi (BEC)"),
+       O("loadboard_hacked","Load-board account hacked or stolen","Аккаунт на бирже грузов взломан или украден","Yuk birjasi akkaunti buzildi yoki o‘g‘irlandi"),
+       O("fake_broker","Dealt with a fake broker / shipper","Столкнулись с фальшивым брокером / отправителем","Soxta broker / jo‘natuvchiga duch keldingiz"),
+       O("fake_carrier","A fake carrier picked up your load","Фальшивый перевозчик забрал ваш груз","Soxta tashuvchi yukingizni oldi"),
+       O("fuel_advance","Fuel-advance scam","Афера с топливным авансом","Yoqilg‘i avansi bo‘yicha firibgarlik"),
+       O("fake_docs","Fake / forged documents (BOL, POD, rate con)","Поддельные документы (BOL, POD, rate con)","Soxta hujjatlar (BOL, POD, rate con)"),
+       O("claim_dispute","Damage / shortage claim dispute","Спор по претензии о повреждении / недостаче","Shikast / kamomad bo‘yicha nizo"),
+       O("platform_block","Platform account blocked / restricted","Аккаунт на платформе заблокирован / ограничен","Platforma akkaunti bloklandi / cheklandi"),
+       O("geo_block","Blocked due to Uzbekistan / CIS location or IP","Блокировка из-за узбекского / СНГ адреса или IP","O‘zbekiston / MDH manzili yoki IP tufayli bloklash"),
+       O("deepfake","Deepfake / voice-impersonation attempt","Попытка дипфейка / имитации голоса","Deepfake / ovoz soxtalashtirish urinishi"),
+       O("law_contact","Contacted by law enforcement (FBI/police/FMCSA)","Обращение правоохранителей (FBI/полиция/FMCSA)","Huquq-tartibot organlari murojaati (FBI/politsiya/FMCSA)"),
+       O("other","Other incident","Другой инцидент","Boshqa hodisa")]},
+
+    {id:"inc_loss", type:"single", roles:"all",
+     label:L("Approximate total financial loss from these incidents (USD)","Примерный суммарный финансовый ущерб от этих инцидентов (USD)","Ushbu hodisalardan taxminiy umumiy moliyaviy zarar (USD)"),
+     options:[
+       O("0","No loss","Без ущерба","Zarar yo‘q"),
+       O("lt1k","Under $1k","До $1 тыс.","$1 mingdan kam"),
+       O("1_10k","$1k–$10k","$1–10 тыс.","$1–10 ming"),
+       O("10_50k","$10k–$50k","$10–50 тыс.","$10–50 ming"),
+       O("50_250k","$50k–$250k","$50–250 тыс.","$50–250 ming"),
+       O("250k_1m","$250k–$1M","$250 тыс.–$1 млн","$250 ming–$1 mln"),
+       O("1mp","More than $1M","Более $1 млн","$1 mln dan ortiq"),
+       O("na","Prefer not to say","Не хочу указывать","Aytishni istamayman")]},
+
+    {id:"inc_report", type:"multi", roles:"all",
+     label:L("Did you report the incident(s)? To whom? (select all)","Сообщали ли вы об инциденте(ах)? Кому? (выберите все)","Hodisa(lar) haqida xabar berdingizmi? Kimga? (barchasini tanlang)"),
+     options:[
+       O("us_le","US police / FBI","Полиция США / FBI","AQSh politsiyasi / FBI"),
+       O("fmcsa","FMCSA / DOT","FMCSA / DOT","FMCSA / DOT"),
+       O("platform","Load-board / platform","Биржа / платформа","Yuk birjasi / platforma"),
+       O("factoring","Factoring / insurance","Факторинг / страховая","Faktoring / sug‘urta"),
+       O("itpark","IT-Park","IT-Park","IT-Park"),
+       O("uz_authorities","Uzbek authorities","Узбекские органы","O‘zbekiston organlari"),
+       O("no_one","No one","Никому","Hech kimga")]},
+
+    {id:"inc_recover", type:"single", roles:"all",
+     label:L("Did you recover the money / cargo?","Удалось ли вернуть деньги / груз?","Pul / yukni qaytara oldingizmi?"),
+     options:[
+       O("full","Fully","Полностью","To‘liq"),
+       O("partial","Partly","Частично","Qisman"),
+       O("none","Not at all","Совсем нет","Umuman yo‘q"),
+       O("pending","Still pending","Пока в процессе","Hali jarayonda"),
+       O("na","Not applicable","Не применимо","Tegishli emas")]},
+
+    {id:"inc_worst", type:"textarea", roles:"all",
+     label:L("Optional: briefly describe the most serious incident (no names).","По желанию: кратко опишите самый серьёзный инцидент (без имён).","Ixtiyoriy: eng jiddiy hodisani qisqacha yozing (ismlarsiz)."),
+     help:L("What happened, how it started, and what would have prevented it.","Что произошло, как началось и что могло бы это предотвратить.","Nima bo‘ldi, qanday boshlandi va nima oldini olardi.")}
+  ]
+},
+
+/* ---------- S4 : PROBLEMS ---------- */
+{
+  id:"s4", roles:"all",
+  kicker:L("Section 4","Раздел 4","4-bo‘lim"),
+  title:L("Problems and challenges","Проблемы и трудности","Muammolar va qiyinchiliklar"),
+  questions:[
+    {id:"prob_severity", type:"grid-scale", scale:SCALE_SEV, roles:"all",
+     label:L("How big a problem is each of these for your business?","Насколько серьёзна каждая из этих проблем для вашего бизнеса?","Quyidagilarning har biri biznesingiz uchun qanchalik muammo?"),
+     rows:[
+       O("nonpayment","Not getting paid / late payment","Неоплата / задержка оплаты","To‘lov olinmasligi / kechikishi"),
+       O("fraud","Fraud and scams","Мошенничество и аферы","Firibgarlik va aldov"),
+       O("platform_restrict","Platform restrictions / blocks","Ограничения / блокировки платформ","Platforma cheklovlari / bloklari"),
+       O("reputation","Bad reputation of Uzbek firms","Плохая репутация узбекских компаний","O‘zbek kompaniyalarining yomon obro‘si"),
+       O("legal_uncertain","Legal / regulatory uncertainty","Правовая / регуляторная неопределённость","Huquqiy / tartibga solish noaniqligi"),
+       O("low_rates","Low freight rates / rate pressure","Низкие ставки / давление по ставкам","Past narxlar / narx bosimi"),
+       O("insurance","Insurance cost / access","Стоимость / доступ к страхованию","Sug‘urta narxi / undan foydalanish"),
+       O("banking","Getting paid into Uzbekistan / banking","Получение оплаты в Узбекистан / банкинг","O‘zbekistonga to‘lov olish / banking"),
+       O("talent","Finding / training staff","Поиск / обучение персонала","Xodim topish / o‘qitish"),
+       O("competition","Competition from other Uzbek firms","Конкуренция с другими узбекскими фирмами","Boshqa o‘zbek firmalari bilan raqobat"),
+       O("language","Language / communication","Язык / коммуникация","Til / muloqot")]},
+
+    {id:"prob_open", type:"textarea", roles:"all",
+     label:L("What is the single biggest challenge in your work right now?","Какая самая большая трудность в вашей работе прямо сейчас?","Hozir ishingizdagi eng katta qiyinchilik nima?")}
+  ]
+},
+
+/* ---------- S5 : MARKET PRACTICES (indirect integrity) ---------- */
+{
+  id:"s5", roles:"all",
+  kicker:L("Section 5","Раздел 5","5-bo‘lim"),
+  title:L("The market as a whole","Рынок в целом","Bozor umuman"),
+  intro:L("This section is about the market and industry practices in general — not about you personally. Your answers are anonymous and help design fair, realistic rules.",
+          "Этот раздел — о рынке и практиках отрасли в целом, а не о вас лично. Ответы анонимны и помогут выработать справедливые, реалистичные правила.",
+          "Bu bo‘lim umuman bozor va soha amaliyotlari haqida — shaxsan siz haqingizda emas. Javoblar anonim va adolatli, real qoidalar ishlab chiqishga yordam beradi."),
+  questions:[
+    {id:"mkt_common", type:"grid-scale", scale:SCALE_COMMON, roles:"all",
+     label:L("How common are these practices among Uzbek BPO-logistics companies you know of?","Насколько распространены эти практики среди известных вам узбекских BPO-логистических компаний?","Sizga ma’lum o‘zbek BPO-logistika kompaniyalari orasida bu amaliyotlar qanchalik keng tarqalgan?"),
+     rows:[
+       O("double_broker","Re-brokering loads without telling the shipper","Переуступка грузов без уведомления отправителя","Yukni jo‘natuvchiga aytmasdan qayta topshirish"),
+       O("others_mc","Operating under another company’s MC / authority","Работа под чужим MC / лицензией","Boshqa kompaniya MC / ruxsatnomasi ostida ishlash"),
+       O("buy_accounts","Buying or renting load-board accounts","Покупка или аренда аккаунтов на биржах грузов","Yuk birjasi akkauntlarini sotib olish yoki ijaraga olish"),
+       O("us_persona","Using a US address / phone to appear US-based","Использование адреса / телефона США, чтобы выглядеть американской компанией","AQSh kabi ko‘rinish uchun AQSh manzili / telefonidan foydalanish"),
+       O("hide_location","Not disclosing that the team is in Uzbekistan","Сокрытие того, что команда находится в Узбекистане","Jamoa O‘zbekistonda ekanini yashirish"),
+       O("keep_advance","Taking a fuel advance and not delivering","Получение топливного аванса без доставки","Yoqilg‘i avansini olib, yuk yetkazmaslik"),
+       O("alter_docs","Altering or fabricating documents (BOL/POD)","Изменение или подделка документов (BOL/POD)","Hujjatlarni o‘zgartirish yoki soxtalashtirish (BOL/POD)"),
+       O("chameleon","Opening a new company to escape a bad record","Открытие новой компании, чтобы уйти от плохой истории","Yomon tarixdan qochish uchun yangi kompaniya ochish")]},
+
+    {id:"mkt_asked", type:"multi", roles:"all",
+     label:L("Have you or your staff ever been asked or pressured — by clients, partners or others — to do any of the following?","Просили ли вас или ваших сотрудников — клиенты, партнёры или другие — сделать что-либо из этого?","Sizdan yoki xodimlaringizdan — mijozlar, hamkorlar yoki boshqalar — quyidagilardan birortasini qilishni so‘raganmi/bosim o‘tkazganmi?"),
+     help:L("Being asked is not the same as doing it — we want to understand the pressures in the market.","Просьба — не то же, что действие; мы хотим понять давление на рынке.","So‘ralish — bajarish emas; bozordagi bosimni tushunmoqchimiz."),
+     options:[
+       O("rebroker_hidden","Re-broker a load without telling the shipper","Переуступить груз без уведомления отправителя","Yukni jo‘natuvchiga aytmasdan qayta topshirish"),
+       O("use_other_mc","Use another company’s MC / authority","Использовать чужой MC / лицензию","Boshqa kompaniya MC / ruxsatnomasidan foydalanish"),
+       O("change_docs","Change, backdate or fake a document","Изменить, задним числом оформить или подделать документ","Hujjatni o‘zgartirish, orqa sana qo‘yish yoki soxtalashtirish"),
+       O("no_authority","Take a load without proper authority / insurance","Взять груз без нужной лицензии / страховки","Kerakli ruxsat / sug‘urtasiz yuk olish"),
+       O("hide_uz","Hide that the team is in Uzbekistan","Скрыть, что команда в Узбекистане","Jamoa O‘zbekistonda ekanini yashirish"),
+       O("third_party_pay","Accept payment to a third party’s account","Принять оплату на счёт третьего лица","To‘lovni uchinchi shaxs hisobiga qabul qilish"),
+       O("none","None of the above","Ничего из перечисленного","Yuqoridagilarning hech biri"),
+       O("na","Prefer not to say","Не хочу отвечать","Javob berishni istamayman")]},
+
+    {id:"mkt_reasons", type:"multi", roles:"all",
+     label:L("In your opinion, why do some companies engage in double brokering or similar practices? (select all)","По вашему мнению, почему некоторые компании занимаются двойным брокериджем и подобным? (выберите все)","Sizningcha, ba’zi kompaniyalar nega ikki tomonlama brokerlik va shunga o‘xshash ishlar bilan shug‘ullanadi? (barchasini tanlang)"),
+     options:[
+       O("low_rates","Freight rates are too low to survive otherwise","Ставки слишком низкие, иначе не выжить","Narxlar juda past, aks holda omon qolib bo‘lmaydi"),
+       O("easy_money","It’s easy money","Это лёгкие деньги","Bu oson pul"),
+       O("no_enforcement","No real enforcement / consequences","Нет реального контроля / последствий","Real nazorat / oqibat yo‘q"),
+       O("everyone","Everyone does it","Все так делают","Hamma shunday qiladi"),
+       O("survival","Pressure to keep the business alive","Давление, чтобы удержать бизнес","Biznesni saqlab qolish bosimi"),
+       O("dont_know_illegal","Many don’t know it’s illegal","Многие не знают, что это незаконно","Ko‘pchilik buning noqonuniyligini bilmaydi"),
+       O("unknown","I don’t know","Не знаю","Bilmayman")]},
+
+    {id:"mkt_attitude", type:"grid-scale", scale:SCALE_AGREE, roles:"all",
+     label:L("How much do you agree with each statement?","Насколько вы согласны с каждым утверждением?","Har bir fikrga qanchalik qo‘shilasiz?"),
+     rows:[
+       O("shortcuts","Given very low rates, some shortcuts are understandable","При очень низких ставках некоторые «обходные пути» можно понять","Juda past narxlarda ba’zi «yo‘l qisqartirishlar»ni tushunsa bo‘ladi"),
+       O("us_persona_ok","Using a US phone number and address is just smart business","Использовать американский номер и адрес — это просто разумный бизнес","AQSh raqami va manzilidan foydalanish — shunchaki oqilona biznes"),
+       O("db_not_fraud","Double brokering isn’t really fraud if everyone eventually gets paid","Двойной брокеридж — не мошенничество, если в итоге всем платят","Agar oxir-oqibat hammaga to‘lansa, ikki tomonlama brokerlik firibgarlik emas"),
+       O("client_verify","It’s the client’s job to verify who they hire, not ours","Проверять, кого нанимают, — задача клиента, а не наша","Kimni yollashini tekshirish — mijozning ishi, bizniki emas"),
+       O("rules_help","Clear government rules would help honest companies","Чёткие государственные правила помогли бы честным компаниям","Aniq davlat qoidalari halol kompaniyalarga yordam berardi")]},
+
+    {id:"mkt_location", type:"single", roles:"all",
+     label:L("How do you usually present your company’s location to US brokers / shippers?","Как вы обычно указываете местоположение вашей компании брокерам / отправителям США?","Odatda AQSh brokerlari / jo‘natuvchilariga kompaniyangiz joylashuvini qanday ko‘rsatasiz?"),
+     options:[
+       O("us_based","As US-based","Как компанию из США","AQShdagi kompaniya sifatida"),
+       O("uz_based","As Uzbekistan-based","Как компанию из Узбекистана","O‘zbekistondagi kompaniya sifatida"),
+       O("unspecified","We don’t specify","Не уточняем","Aniqlashtirmaymiz"),
+       O("depends","Depends on the client","Зависит от клиента","Mijozga bog‘liq")]},
+
+    {id:"mkt_familiar", type:"scale", scale:SCALE_FAMILIAR, roles:"all",
+     label:L("How familiar are you with the term “double brokering” and the fact that it is illegal in the US?","Насколько вы знакомы с термином «двойной брокеридж» и тем, что в США это незаконно?","«Ikki tomonlama brokerlik» atamasi va uning AQShda noqonuniyligi bilan qanchalik tanishsiz?")}
+  ]
+},
+
+/* ---------- S6 : REGULATION ---------- */
+{
+  id:"s6", roles:"all",
+  kicker:L("Section 6","Раздел 6","6-bo‘lim"),
+  title:L("Regulation and what you need","Регулирование и что вам нужно","Tartibga solish va sizga nima kerak"),
+  intro:L("Uzbekistan is preparing rules for the BPO-logistics sector. Your input shapes them.","Узбекистан готовит правила для сектора BPO-логистики. Ваше мнение повлияет на них.","O‘zbekiston BPO-logistika sohasi uchun qoidalar tayyorlamoqda. Fikringiz ularga ta’sir qiladi."),
+  questions:[
+    {id:"reg_support", type:"scale", scale:SCALE_SUPPORT, roles:"all",
+     label:L("Do you support official registration / regulation of the BPO-logistics sector in Uzbekistan?","Поддерживаете ли вы официальную регистрацию / регулирование сектора BPO-логистики в Узбекистане?","O‘zbekistonda BPO-logistika sohasini rasmiy ro‘yxatga olish / tartibga solishni qo‘llab-quvvatlaysizmi?")},
+
+    {id:"reg_elements", type:"multi", roles:"all",
+     label:L("What should such regulation include? (select all)","Что должно включать такое регулирование? (выберите все)","Bunday tartibga solish nimalarni o‘z ichiga olishi kerak? (barchasini tanlang)"),
+     options:[
+       O("licensing","Company registration / licensing","Регистрация / лицензирование компаний","Kompaniyalarni ro‘yxatga olish / litsenziyalash"),
+       O("training","Mandatory training & certification of dispatchers","Обязательное обучение и сертификация диспетчеров","Dispetcherlarni majburiy o‘qitish va sertifikatlash"),
+       O("code","A code of conduct / ethics standard","Кодекс поведения / этический стандарт","Xulq-atvor kodeksi / axloq standarti"),
+       O("dispute","Official complaint & dispute mechanism","Официальный механизм жалоб и споров","Rasmiy shikoyat va nizolar mexanizmi"),
+       O("blacklist","A blacklist of fraudulent actors","Чёрный список недобросовестных участников","Firibgarlarning qora ro‘yxati"),
+       O("gov_coop","Government cooperation with FMCSA / FCC","Сотрудничество государства с FMCSA / FCC","Davlatning FMCSA / FCC bilan hamkorligi"),
+       O("standards","Minimum insurance / contract standards","Минимальные стандарты страхования / договоров","Minimal sug‘urta / shartnoma standartlari"),
+       O("kyc","KYC of foreign clients","KYC иностранных клиентов","Xorijiy mijozlar KYC’si"),
+       O("cyber","Cyber-security standards","Стандарты кибербезопасности","Kiberxavfsizlik standartlari"),
+       O("tax","Clear tax rules","Чёткие налоговые правила","Aniq soliq qoidalari"),
+       O("against","I am against regulation","Я против регулирования","Men tartibga solishga qarshiman")]},
+
+    {id:"reg_register", type:"single", roles:"all",
+     label:L("Would you voluntarily register your company / yourself with an official body or association?","Готовы ли вы добровольно зарегистрировать компанию / себя в официальном органе или ассоциации?","Kompaniyangiz / o‘zingizni rasmiy organ yoki uyushmada ixtiyoriy ro‘yxatdan o‘tkazasizmi?"),
+     options:[
+       O("yes","Yes","Да","Ha"),
+       O("maybe","Maybe / depends on terms","Возможно / зависит от условий","Balki / shartlarga bog‘liq"),
+       O("no","No","Нет","Yo‘q")]},
+
+    {id:"reg_support_need", type:"multi", roles:"all",
+     label:L("What support from the state would help you most? (select all)","Какая поддержка государства помогла бы вам больше всего? (выберите все)","Davlatdan qanday yordam sizga eng ko‘p yordam berardi? (barchasini tanlang)"),
+     options:[
+       O("legal","Legal protection / representation","Правовая защита / представительство","Huquqiy himoya / vakillik"),
+       O("recover","Help recovering unpaid money","Помощь в возврате неоплаченных денег","To‘lanmagan pulni qaytarishda yordam"),
+       O("platforms","Negotiating with US platforms (DAT/Truckstop/Highway)","Переговоры с платформами США (DAT/Truckstop/Highway)","AQSh platformalari bilan muzokara (DAT/Truckstop/Highway)"),
+       O("cyber","Cyber-security help","Помощь по кибербезопасности","Kiberxavfsizlik bo‘yicha yordam"),
+       O("training","Training & certification","Обучение и сертификация","O‘qitish va sertifikatlash"),
+       O("banking","Banking / payment solutions","Банковские / платёжные решения","Bank / to‘lov yechimlari"),
+       O("insurance","Access to insurance","Доступ к страхованию","Sug‘urtadan foydalanish"),
+       O("reputation","Improving the reputation of Uzbek firms","Улучшение репутации узбекских компаний","O‘zbek firmalari obro‘sini yaxshilash"),
+       O("none","Nothing / leave the market alone","Ничего / не вмешиваться в рынок","Hech narsa / bozorga aralashmaslik")]},
+
+    {id:"reg_open", type:"textarea", roles:"all",
+     label:L("Your recommendation to policymakers (optional)","Ваша рекомендация тем, кто разрабатывает политику (необязательно)","Siyosat ishlab chiquvchilarga tavsiyangiz (ixtiyoriy)")}
+  ]
+},
+
+/* ---------- S7 : CLOSE ---------- */
+{
+  id:"s7", roles:"all",
+  kicker:L("Section 7","Раздел 7","7-bo‘lim"),
+  title:L("Anything else","Что-нибудь ещё","Yana biror narsa"),
+  questions:[
+    {id:"final_more", type:"textarea", roles:"all",
+     label:L("Anything else you want policymakers to know?","Что ещё вы хотели бы донести до разработчиков политики?","Siyosat ishlab chiquvchilarga yana nima aytmoqchisiz?")},
+    {id:"contact_optional", type:"text", roles:"all",
+     label:L("Optional contact for follow-up","Необязательный контакт для обратной связи","Aloqa uchun ixtiyoriy kontakt"),
+     help:L("Leave blank to stay fully anonymous. If you enter anything here, your response is no longer anonymous.","Оставьте пустым, чтобы остаться полностью анонимным. Если вы что-то укажете, ответ перестанет быть анонимным.","To‘liq anonim qolish uchun bo‘sh qoldiring. Agar biror narsa yozsangiz, javobingiz anonim bo‘lmaydi.")}
+  ]
+}
+];
+
+/* ============================================================================
+   UI CHROME STRINGS
+   ========================================================================== */
+var UI = {
+  en:{title:"BPO-Logistics Sector Survey",
+      sub:"Anonymous · for evidence-based regulation",
+      badge:"Anonymous survey",
+      h1:"Help us map how Uzbekistan’s BPO-logistics sector really works",
+      p1:"Uzbekistan is preparing regulation for the BPO-logistics sector. To make it fair and realistic, we first need a clear, honest picture of how dispatching, carriers and brokers actually operate — and what problems you face.",
+      p2:"It takes about 8–12 minutes. Questions adapt to your role.",
+      anon:"🔒 This survey is anonymous. We do not ask for your name, your company’s name, MC numbers or emails. Please answer honestly — there are no right or wrong answers, and nothing here is used to identify or punish anyone.",
+      selectRole:"Please select your role above to see the questions relevant to you.",
+      required:"Required",
+      submit:"Submit (download responses)",
+      footHint:"Your responses are saved as a file on your own device.",
+      needRole:"Please select your role before submitting.",
+      thanksBig:"✅",
+      thanksH:"Thank you",
+      thanksP:"Your anonymous response has been saved as a file. Thank you for helping shape fair rules for the sector.",
+      copy:"Copy responses (JSON)",
+      another:"Submit another response",
+      copied:"Copied to clipboard",
+      saved:"Response file downloaded",
+      sent:"Response sent — thank you",
+      footHintSend:"Your response is sent anonymously to the survey organizer.",
+      thanksPSend:"Your anonymous response has been recorded. Thank you for helping shape fair rules for the sector.",
+      sendFailed:"Couldn’t reach the server — your response was saved as a file instead."},
+  ru:{title:"Опрос сектора BPO-логистики",
+      sub:"Анонимно · для регулирования на основе данных",
+      badge:"Анонимный опрос",
+      h1:"Помогите нам понять, как на самом деле работает сектор BPO-логистики Узбекистана",
+      p1:"Узбекистан готовит регулирование сектора BPO-логистики. Чтобы оно было справедливым и реалистичным, нам нужна честная картина того, как работают диспетчеризация, перевозчики и брокеры — и с какими проблемами вы сталкиваетесь.",
+      p2:"Займёт около 8–12 минут. Вопросы подстраиваются под вашу роль.",
+      anon:"🔒 Опрос анонимный. Мы не спрашиваем ваше имя, название компании, номера MC или email. Отвечайте честно — правильных или неправильных ответов нет, и ничто здесь не используется для идентификации или наказания.",
+      selectRole:"Пожалуйста, выберите вашу роль выше, чтобы увидеть подходящие вопросы.",
+      required:"Обязательно",
+      submit:"Отправить (скачать ответы)",
+      footHint:"Ваши ответы сохраняются файлом на вашем устройстве.",
+      needRole:"Пожалуйста, выберите вашу роль перед отправкой.",
+      thanksBig:"✅",
+      thanksH:"Спасибо",
+      thanksP:"Ваш анонимный ответ сохранён в виде файла. Спасибо, что помогаете выработать справедливые правила для сектора.",
+      copy:"Скопировать ответы (JSON)",
+      another:"Отправить ещё один ответ",
+      copied:"Скопировано",
+      saved:"Файл с ответами скачан",
+      sent:"Ответ отправлен — спасибо",
+      footHintSend:"Ваш ответ анонимно отправляется организатору опроса.",
+      thanksPSend:"Ваш анонимный ответ записан. Спасибо, что помогаете выработать справедливые правила для сектора.",
+      sendFailed:"Не удалось связаться с сервером — ответ сохранён в виде файла."},
+  uz:{title:"BPO-logistika sohasi so‘rovnomasi",
+      sub:"Anonim · dalilga asoslangan tartibga solish uchun",
+      badge:"Anonim so‘rovnoma",
+      h1:"O‘zbekiston BPO-logistika sohasi aslida qanday ishlashini tushunishga yordam bering",
+      p1:"O‘zbekiston BPO-logistika sohasi uchun tartibga solish tayyorlamoqda. U adolatli va real bo‘lishi uchun avval dispetcherlik, tashuvchilar va brokerlar qanday ishlashini — va siz duch keladigan muammolarni aniq bilishimiz kerak.",
+      p2:"Taxminan 8–12 daqiqa oladi. Savollar rolingizga moslashadi.",
+      anon:"🔒 So‘rovnoma anonim. Ismingiz, kompaniya nomi, MC raqamlari yoki emailni so‘ramaymiz. Iltimos, halol javob bering — to‘g‘ri yoki noto‘g‘ri javob yo‘q va bu yerdagi hech narsa hech kimni aniqlash yoki jazolash uchun ishlatilmaydi.",
+      selectRole:"Sizga tegishli savollarni ko‘rish uchun yuqorida rolingizni tanlang.",
+      required:"Majburiy",
+      submit:"Yuborish (javoblarni yuklab olish)",
+      footHint:"Javoblaringiz o‘z qurilmangizga fayl sifatida saqlanadi.",
+      needRole:"Yuborishdan oldin rolingizni tanlang.",
+      thanksBig:"✅",
+      thanksH:"Rahmat",
+      thanksP:"Anonim javobingiz fayl sifatida saqlandi. Soha uchun adolatli qoidalar ishlab chiqishga yordam berganingiz uchun rahmat.",
+      copy:"Javoblarni nusxalash (JSON)",
+      another:"Yana bir javob yuborish",
+      copied:"Nusxalandi",
+      saved:"Javoblar fayli yuklab olindi",
+      sent:"Javob yuborildi — rahmat",
+      footHintSend:"Javobingiz so‘rovnoma tashkilotchisiga anonim yuboriladi.",
+      thanksPSend:"Anonim javobingiz qayd etildi. Soha uchun adolatli qoidalar ishlab chiqishga yordam berganingiz uchun rahmat.",
+      sendFailed:"Serverga ulanib bo‘lmadi — javob fayl sifatida saqlandi."}
+};
+
+/* ============================================================================
+   RUNTIME
+   ========================================================================== */
+var lang = "en";
+var answers = {};       // id -> value (single/text/number: scalar; multi: array; grids: object)
+var submitted = false;
+var deliveredVia = "file"; // "sheet" | "file" — how the last submission was delivered
+
+function t(obj){ return obj ? (obj[lang] || obj.en) : ""; }
+function role(){ return answers.role || null; }
+
+function roleMatch(q){
+  if(q.roles === "all" || !q.roles) return true;
+  var r = role();
+  if(!r) return false;
+  return q.roles.indexOf(r) !== -1;
+}
+function visible(q){
+  if(!roleMatch(q)) return false;
+  if(q.showIf && !q.showIf(answers)) return false;
+  return true;
+}
+
+/* ---- render ---- */
+function render(){
+  document.documentElement.lang = lang;
+  var u = UI[lang];
+  document.getElementById("brandTitle").textContent = u.title;
+  document.getElementById("brandSub").textContent = u.sub;
+  document.getElementById("footMsg").textContent = CONFIG.submitEndpoint ? u.footHintSend : u.footHint;
+  document.getElementById("submitBtn").textContent = u.submit;
+
+  // hero
+  document.getElementById("hero").innerHTML =
+    '<span class="badge">'+u.badge+'</span>'+
+    '<h1>'+u.h1+'</h1>'+
+    '<p>'+u.p1+'</p>'+
+    '<p>'+u.p2+'</p>'+
+    '<div class="anon">'+u.anon+'</div>';
+
+  if(submitted){ renderThanks(); return; }
+
+  var html = "";
+  SURVEY.forEach(function(sec){
+    // is any question in this section visible?
+    var qs = sec.questions.filter(visible);
+    // section 1 always shows (role picker). others need a role.
+    var showSection = qs.length > 0;
+    if(!showSection) return;
+    html += '<section class="section" id="'+sec.id+'">';
+    html += '<div class="kicker">'+t(sec.kicker)+'</div>';
+    html += '<h2>'+t(sec.title)+'</h2>';
+    if(sec.intro) html += '<div class="sintro">'+t(sec.intro)+'</div>';
+    qs.forEach(function(q){ html += renderQ(q); });
+    html += '</section>';
+
+    // after role picker, if no role chosen, show prompt and stop
+    if(sec.id === "s1" && !role()){
+      html += '<section class="section"><div class="sintro" style="text-align:center;padding:8px 0">'+UI[lang].selectRole+'</div></section>';
+    }
+  });
+  document.getElementById("form").innerHTML = html;
+  bind();
+}
+
+function reqMark(q){ return q.required ? ' <span class="req" title="'+UI[lang].required+'">*</span>' : ''; }
+
+function renderQ(q){
+  var h = '<div class="q" data-qid="'+q.id+'" id="q_'+q.id+'">';
+  h += '<div class="qlabel">'+t(q.label)+reqMark(q)+'</div>';
+  if(q.help) h += '<div class="help">'+t(q.help)+'</div>';
+
+  if(q.type === "single" || q.type === "multi"){
+    var cls = q.control === "rolebar" ? "opts rolebar" : "opts";
+    h += '<div class="'+cls+'">';
+    q.options.forEach(function(o){
+      var checked = isChecked(q,o.value);
+      h += '<label class="opt'+(checked?' checked':'')+'">'+
+           '<input type="'+(q.type==="single"?"radio":"checkbox")+'" name="'+q.id+'" value="'+o.value+'"'+(checked?' checked':'')+'>'+
+           '<span>'+t(o.label)+'</span></label>';
+    });
+    h += '</div>';
+  }
+  else if(q.type === "number"){
+    var v = (answers[q.id]!=null?answers[q.id]:"");
+    h += '<input type="number" min="'+(q.min!=null?q.min:0)+'" step="1" name="'+q.id+'" value="'+v+'" inputmode="numeric">';
+  }
+  else if(q.type === "text"){
+    var tv = answers[q.id]!=null?String(answers[q.id]).replace(/"/g,"&quot;"):"";
+    h += '<input type="text" name="'+q.id+'" value="'+tv+'">';
+  }
+  else if(q.type === "textarea"){
+    var ta = answers[q.id]!=null?String(answers[q.id]):"";
+    h += '<textarea name="'+q.id+'">'+ta.replace(/</g,"&lt;")+'</textarea>';
+  }
+  else if(q.type === "scale"){
+    h += renderScaleRow(q.id, q.scale, answers[q.id]);
+  }
+  else if(q.type === "grid-number"){
+    h += '<div class="gridwrap"><table class="grid"><tbody>';
+    q.rows.forEach(function(r){
+      var val = (answers[q.id] && answers[q.id][r.value]!=null) ? answers[q.id][r.value] : "";
+      h += '<tr><td>'+t(r.label)+'</td>'+
+           '<td class="num"><input type="number" min="0" step="1" inputmode="numeric" '+
+           'data-grid="'+q.id+'" data-row="'+r.value+'" value="'+val+'"></td></tr>';
+    });
+    h += '</tbody></table></div>';
+  }
+  else if(q.type === "grid-scale"){
+    h += '<div class="gridwrap"><table class="grid scale"><thead><tr><th></th>';
+    q.scale.forEach(function(s){ h += '<th class="sc">'+t(s.label)+'</th>'; });
+    h += '</tr></thead><tbody>';
+    q.rows.forEach(function(r){
+      var cur = answers[q.id] ? answers[q.id][r.value] : null;
+      h += '<tr><td>'+t(r.label)+'</td>';
+      q.scale.forEach(function(s){
+        var ck = cur===s.value ? ' checked' : '';
+        h += '<td class="sc"><input type="radio" name="'+q.id+'__'+r.value+'" '+
+             'data-gridscale="'+q.id+'" data-row="'+r.value+'" value="'+s.value+'"'+ck+'></td>';
+      });
+      h += '</tr>';
+    });
+    h += '</tbody></table></div>';
+  }
+  h += '</div>';
+  return h;
+}
+
+function renderScaleRow(id, scale, cur){
+  var h = '<div class="opts" style="gap:6px">';
+  scale.forEach(function(s){
+    var ck = cur===s.value;
+    h += '<label class="opt'+(ck?' checked':'')+'" style="padding:8px 12px">'+
+         '<input type="radio" name="'+id+'" value="'+s.value+'"'+(ck?' checked':'')+'>'+
+         '<span>'+t(s.label)+'</span></label>';
+  });
+  h += '</div>';
+  return h;
+}
+
+function isChecked(q,val){
+  if(q.type==="single") return answers[q.id]===val;
+  return Array.isArray(answers[q.id]) && answers[q.id].indexOf(val)!==-1;
+}
+
+/* ---- bind events ---- */
+function bind(){
+  var form = document.getElementById("form");
+
+  form.querySelectorAll('input[type=radio]').forEach(function(el){
+    el.addEventListener("change", function(){
+      if(el.dataset.gridscale){
+        var id=el.dataset.gridscale, row=el.dataset.row;
+        answers[id]=answers[id]||{}; answers[id][row]=el.value;
+        markGroupChecked(el);
+        return;
+      }
+      answers[el.name]=el.value;
+      // role change → re-render
+      if(el.name==="role"){ render(); return; }
+      // showIf dependencies may change → re-render lightly
+      reRenderIfConditional(el.name);
+      markGroupChecked(el);
+    });
+  });
+
+  form.querySelectorAll('input[type=checkbox]').forEach(function(el){
+    el.addEventListener("change", function(){
+      var arr = Array.isArray(answers[el.name])?answers[el.name]:[];
+      if(el.checked){ if(arr.indexOf(el.value)===-1) arr.push(el.value); }
+      else { arr = arr.filter(function(v){return v!==el.value;}); }
+      answers[el.name]=arr;
+      el.closest(".opt").classList.toggle("checked", el.checked);
+    });
+  });
+
+  form.querySelectorAll('input[type=number]').forEach(function(el){
+    el.addEventListener("input", function(){
+      if(el.dataset.grid){
+        var id=el.dataset.grid, row=el.dataset.row;
+        answers[id]=answers[id]||{};
+        if(el.value==="") delete answers[id][row];
+        else answers[id][row]=Number(el.value);
+      } else {
+        answers[el.name]= el.value==="" ? null : Number(el.value);
+      }
+    });
+  });
+
+  form.querySelectorAll('input[type=text], textarea').forEach(function(el){
+    el.addEventListener("input", function(){
+      answers[el.name]= el.value;
+      reRenderIfConditional(el.name);
+    });
+  });
+}
+
+function markGroupChecked(el){
+  // update .checked styling within a radio group
+  var name = el.name;
+  document.querySelectorAll('input[name="'+CSS.escape(name)+'"]').forEach(function(x){
+    var opt = x.closest(".opt");
+    if(opt) opt.classList.toggle("checked", x.checked);
+  });
+}
+
+var CONDITIONAL_TRIGGERS = ["role"]; // fields that other questions depend on via showIf
+function reRenderIfConditional(name){
+  if(CONDITIONAL_TRIGGERS.indexOf(name)!==-1) render();
+}
+
+/* ---- thanks screen ---- */
+function renderThanks(){
+  var u=UI[lang];
+  var msg = deliveredVia==="sheet" ? u.thanksPSend : u.thanksP;
+  document.getElementById("form").innerHTML =
+    '<section class="section thanks">'+
+    '<div class="big">'+u.thanksBig+'</div>'+
+    '<h2>'+u.thanksH+'</h2>'+
+    '<p>'+msg+'</p>'+
+    '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px">'+
+    '<button class="btn ghost" id="copyBtn">'+u.copy+'</button>'+
+    '<button class="btn" id="againBtn">'+u.another+'</button>'+
+    '</div></section>';
+  document.getElementById("footerActions").classList.add("hidden");
+  document.getElementById("copyBtn").addEventListener("click", function(){
+    navigator.clipboard.writeText(JSON.stringify(buildPayload(),null,2)).then(function(){toast(u.copied);});
+  });
+  document.getElementById("againBtn").addEventListener("click", function(){
+    answers={}; submitted=false;
+    document.getElementById("footerActions").classList.remove("hidden");
+    window.scrollTo(0,0); render();
+  });
+}
+
+/* ---- submit ---- */
+function buildPayload(){
+  return {
+    survey:"uz-bpo-logistics-v1",
+    responseId:"R-"+Math.random().toString(36).slice(2,10).toUpperCase(),
+    submittedAtISO:new Date().toISOString(),
+    language:lang,
+    role:role(),
+    answers:answers
+  };
+}
+
+function validate(){
+  // only role is required
+  if(!role()){
+    var s1=document.getElementById("q_role");
+    if(s1){ s1.scrollIntoView({behavior:"smooth",block:"center"}); }
+    toast(UI[lang].needRole);
+    return false;
+  }
+  return true;
+}
+
+function doSubmit(){
+  if(!validate()) return;
+  var payload = buildPayload();
+  var btn = document.getElementById("submitBtn");
+  if(CONFIG.submitEndpoint){
+    btn.disabled = true;
+    // Apps Script Web Apps reject CORS preflight, so send a "simple" request:
+    // text/plain body + no-cors. The response is opaque but the row is written.
+    fetch(CONFIG.submitEndpoint,{
+      method:"POST",
+      mode:"no-cors",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body:JSON.stringify(payload)
+    }).then(function(){
+      finishSubmit(payload, "sheet");
+    }).catch(function(){
+      // network unreachable → don't lose the response, save a file
+      downloadJSON(payload);
+      finishSubmit(payload, "file", true);
+    }).finally(function(){ btn.disabled = false; });
+  } else {
+    downloadJSON(payload);
+    finishSubmit(payload, "file");
+  }
+}
+function finishSubmit(payload, via, fellBack){
+  submitted = true;
+  deliveredVia = via;
+  toast(fellBack ? UI[lang].sendFailed : (via==="sheet" ? UI[lang].sent : UI[lang].saved));
+  window.scrollTo(0,0);
+  render();
+}
+function downloadJSON(payload){
+  var blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a");
+  a.href=url; a.download="bpo-survey-"+payload.responseId+".json";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){URL.revokeObjectURL(url);},1500);
+}
+
+/* ---- toast ---- */
+var toastTimer=null;
+function toast(msg){
+  var el=document.getElementById("toast");
+  el.textContent=msg; el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){el.classList.remove("show");},2200);
+}
+
+/* ---- language switch ---- */
+document.querySelectorAll(".langsw button").forEach(function(b){
+  b.addEventListener("click", function(){
+    document.querySelectorAll(".langsw button").forEach(function(x){x.classList.remove("active");});
+    b.classList.add("active");
+    lang=b.dataset.lang;
+    render();
+  });
+});
+document.getElementById("submitBtn").addEventListener("click", doSubmit);
+
+/* ---- go ---- */
+render();
+</script>
+</body>
+</html>
