@@ -56,26 +56,49 @@ submission appends a row.
 
 ---
 
+## ⚠ Schema changed — clear the old rows first
+
+The questionnaire was rebuilt to the «Пульс рынка» specification, so the question
+IDs are completely different (P1–P5, A1–A7, B1–B7, C1–C7, D1–D7, E1–E5, F1–F5,
+G1–G5, H1–H4, I1–I3, J1–J3, K1–K2). Old test rows use the previous schema and
+would be counted as empty responses.
+
+**Before collecting real data: delete the `Responses` tab entirely** (right-click
+the tab → Delete). It is recreated automatically, with the correct columns, on
+the first new submission.
+
 ## Live Dashboard
 
-A **Dashboard** tab is rebuilt automatically after every submission. It shows:
+A **Dashboard** tab is rebuilt automatically after every submission, following the
+analysis matrix of the specification (§5).
 
-- Total responses
-- Responses by role (with %)
-- How many faced fraud/theft/non-payment
-- Incident types — times reported **and** how many companies were affected
-- Reported financial loss by band + an estimated total (band midpoints)
-- **Reported improper pressure** — the share who said they were asked/pressured
-  to do something improper (the indirect integrity signal)
-- Support for regulation, most-wanted regulation elements, response language
+**Key indices** (highlighted at the top):
 
-To build it from rows you already have (or any time): **BPO Survey → Refresh
-dashboard** in the sheet menu, or run `refreshDashboard` once from the Apps
-Script editor.
+| Index | What it means |
+|---|---|
+| Fraud exposure | % who suffered real damage (F1), and % who met fraud in any form |
+| Cyber-maturity index (0–10) | H1 measures (0–7) + call-back verification (H2 = always, +2) + training (A7, +1) |
+| Diversification funnel | % already moved or preparing (I1) — flags the spec's **>25 % threshold** to launch the Mexico/Canada hub programme |
+| US-market trust barometer | D7 positive (already + yes + yes-with-guarantees) minus negative |
+| Forecast barometer 2027 | J3 net optimists (growth − contraction/disappearance) |
+| Broker-classification risk | share of BPO owners on a risky contract model (B5) — SAFER Act exposure |
+| Reported NOWHERE | share of fraud victims who never reported it (F4) |
 
-> If you **update `Code.gs`** (e.g. to add the dashboard), you must re-publish:
-> **Deploy → Manage deployments → ✏️ → Version: New version → Deploy**.
-> The `/exec` URL does not change, so `index.html` needs no edit.
+Then full distributions for: profile (P1–P5), fraud (F1–F5), legislation awareness
+(G1 grid) and impact (G2–G5), cyber (H1–H4, A7), diversification (I1–I3, ID1–ID2),
+BPO owners (B5–B7), drivers (C2–C7), US market (D3–D7), experts (E2–E5),
+support (J1–J3), plus all open answers (K1) and the interview-willing count (K2).
+
+Declined-consent responses (S0 = No) are counted separately and excluded from the totals.
+
+To build it any time: **BPO Survey → Refresh dashboard** in the sheet menu, or run
+`refreshDashboard` from the Apps Script editor.
+
+> After editing `Code.gs` you must re-publish:
+> **Deploy → Manage deployments → ✏️ (pencil on the EXISTING deployment) →
+> Version: New version → Deploy.**
+> Do **not** use "New deployment" — that creates a different `/exec` URL.
+> The existing URL stays the same, so `index.html` needs no edit.
 
 ---
 
