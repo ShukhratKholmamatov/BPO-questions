@@ -97,7 +97,7 @@
   .chip b{color:var(--accent);font-weight:700}
   .hero-globe{display:flex;align-items:center;justify-content:center}
   .globe-wrap{position:relative;width:100%;max-width:600px;aspect-ratio:1/1;margin-inline:auto}
-  #globe{width:100%;height:100%;display:block;cursor:grab;touch-action:none;
+  #globe{width:100%;height:100%;display:block;cursor:grab;touch-action:pan-y;
     opacity:0;transition:opacity 1.1s ease}
   #globe.on{opacity:1}
   #globe:active{cursor:grabbing}
@@ -155,6 +155,8 @@
   table.grid th.sc,table.grid td.sc{text-align:center;width:1%;white-space:nowrap}
   table.grid td.sc input{accent-color:var(--accent);width:17px;height:17px}
   table.grid tr:last-child td{border-bottom:0}
+  .gcell{display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+  .gcell-lab{display:none}          /* only shown once the grid restacks on phones */
   .scale5{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   .scale5 .anchor{font-size:13.5px;color:var(--muted);flex:1;min-width:90px}
   .scale5 .anchor.r{text-align:right}
@@ -217,13 +219,64 @@
   .sect-nav .hero-next{margin-top:0}
 
   @media (max-width:960px){
-    .formwrap{grid-template-columns:1fr;gap:18px}
-    .stepper{position:static;flex-direction:row;overflow-x:auto;gap:8px;padding-bottom:6px}
-    .stepitem{flex:none;padding:8px}
+    .formwrap{grid-template-columns:minmax(0,1fr);gap:16px}
+    .formwrap .card{min-width:0}
+    /* BUG 2: .stepitem is width:100% for the vertical rail — in the horizontal
+       mobile rail that made every chip full-width, so only step 1 was visible. */
+    .stepper{position:static;flex-direction:row;overflow-x:auto;gap:8px;padding-bottom:6px;
+      -webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .stepper::-webkit-scrollbar{display:none}
+    .stepitem{flex:none;width:auto;padding:7px}
     .stepitem .nm,.steptitle{display:none}
     .sect-hint{display:none}
     .road{height:62px}
     .truck{width:60px;height:60px}
+  }
+
+  /* ======================= phones ======================= */
+  @media (max-width:640px){
+    main{padding:14px 18px 64px}
+    body.hero-mode main{padding-top:88px;padding-bottom:24px}
+    .card{padding:22px 18px;border-radius:16px}
+    .navpill{gap:14px;padding:7px 8px 7px 16px}
+    .navbrand{font-size:16px}
+    .langsw button{padding:6px 10px;font-size:12.5px}
+    h1.sect{font-size:23px}
+    .qlabel{font-size:17px}
+    .opt{padding:13px 14px}
+    .opt span{font-size:16px}
+    .hero .lead{font-size:18px}
+    .hero .body{font-size:15px}
+    /* full-width, thumb-friendly consent buttons */
+    .bigopts{flex-direction:column;align-items:stretch;gap:12px}
+    .bigopt{width:100%;justify-content:flex-start;padding:17px 22px;font-size:17px}
+    .hero-next,.nextbig{width:100%;justify-content:center}
+    .sect-nav{flex-wrap:wrap;gap:12px}
+    .sect-nav .hero-next{flex:1 1 100%}
+    .backlink{order:2}
+    /* --- grid questions restack: one card per row, options listed beneath --- */
+    .gridwrap{overflow:visible;border:0;border-radius:0;background:none}
+    table.grid{min-width:0;width:100%;display:block}
+    table.grid thead{display:none}
+    table.grid tbody,table.grid tr,table.grid td{display:block;width:100%}
+    table.grid tr{background:var(--bg);border-radius:14px;padding:14px;margin-bottom:12px}
+    table.grid tr:last-child{margin-bottom:0}
+    table.grid td{border:0;padding:0}
+    table.grid td:first-child{font-weight:650;font-size:16px;line-height:1.35;padding-bottom:6px}
+    table.grid td.sc{text-align:left;white-space:normal;width:100%}
+    .gcell{display:flex;align-items:center;gap:11px;justify-content:flex-start;
+      padding:12px 13px;margin-top:8px;border-radius:10px;background:var(--card);
+      transition:background .15s,box-shadow .15s}
+    .gcell input{width:18px;height:18px;flex:none;accent-color:var(--accent)}
+    .gcell-lab{display:inline;font-size:15.5px;line-height:1.35}
+    .gcell.checked{background:var(--accent-soft);box-shadow:inset 3px 0 0 0 var(--accent)}
+
+    /* --- 1-5 scales: anchors above/below, five equal thumb targets --- */
+    .scale5{flex-direction:column;align-items:stretch;gap:10px}
+    .scale5 .nums{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+    .scale5 label{padding:15px 0;justify-content:center}
+    .scale5 .anchor{min-width:0;text-align:left}
+    .scale5 .anchor.r{text-align:right}
   }
 
   /* ---- screen 1: hero fills the viewport, with a quiet scroll cue ---- */
@@ -2514,7 +2567,11 @@ function wireHeroScroll(){
   /* A small nudge downward carries you the rest of the way — no half-scrolled
      limbo. Re-arms once you are back at the very top, so scrolling up still works. */
   var snapped=false, snapping=false;
+  /* auto-snap only on layouts where the hero fits the screen; on phones the hero
+     is taller than the viewport and snapping would hijack normal reading */
+  var canSnap = window.matchMedia && window.matchMedia("(min-width: 1000px)").matches;
   HERO.onScroll=function(){
+    if(!canSnap) return;
     if(!document.body.classList.contains("hero-mode")) return;
     if(snapping) return;
     var y=window.pageYOffset||document.documentElement.scrollTop||0;
@@ -3096,7 +3153,10 @@ function renderQ(q){
       h+='<tr><td>'+t(r.label)+'</td>';
       q.cols.forEach(function(c){
         var ck=g[r.value]===c.value;
-        h+='<td class="sc"><input type="radio" data-grid="'+q.id+'" data-row="'+r.value+'" name="'+q.id+'__'+r.value+'" value="'+c.value+'"'+(ck?" checked":"")+'></td>';
+        h+='<td class="sc"><label class="gcell'+(ck?" checked":"")+'">'+
+             '<input type="radio" data-grid="'+q.id+'" data-row="'+r.value+'" name="'+q.id+'__'+r.value+'" value="'+c.value+'"'+(ck?" checked":"")+'>'+
+             '<span class="gcell-lab">'+t(c.label)+'</span>'+
+           '</label></td>';
       });
       h+='</tr>';
     });
@@ -3175,7 +3235,7 @@ function bind(){
 
 function markRadios(name){
   document.querySelectorAll('input[name="'+name+'"]').forEach(function(x){
-    var o=x.closest(".opt, .bigopt"); if(o) o.classList.toggle("checked",x.checked);
+    var o=x.closest(".opt, .bigopt, .gcell"); if(o) o.classList.toggle("checked",x.checked);
     if(x.parentElement && x.parentElement.tagName==="LABEL" && x.closest(".scale5"))
       x.parentElement.classList.toggle("checked",x.checked);
   });
