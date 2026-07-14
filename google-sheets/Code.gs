@@ -4,6 +4,9 @@
  * ---------------------------------------------------------------
  * • doPost      — appends ONE ROW per submission to "Responses"
  *                 (columns auto-created; every role fits one sheet).
+ * • Contacts    — interview volunteers post a separate {type:"contact"} record.
+ *                 It carries NO responseId, so it lands in its own "Contacts"
+ *                 tab and can never be joined back to a set of answers.
  * • Dashboard   — rebuilt after every submission, following the analysis
  *                 matrix of the specification (§5): profile, fraud exposure,
  *                 legislation awareness, cyber maturity, diversification
@@ -20,6 +23,7 @@
 
 var SHEET_NAME = 'Responses';
 var DASH_NAME  = 'Dashboard';
+var CONTACT_NAME = 'Contacts';
 
 /* ============================ WEB APP ============================ */
 
@@ -28,6 +32,20 @@ function doPost(e) {
   lock.waitLock(30000);
   try {
     var data = JSON.parse(e.postData.contents);
+
+    /* Interview volunteers land in their OWN tab, with no responseId, so they can
+       never be joined back to a set of answers. The main base stays anonymous. */
+    if (data.type === 'contact') {
+      var ss2 = SpreadsheetApp.getActiveSpreadsheet();
+      var cs = ss2.getSheetByName(CONTACT_NAME);
+      if (!cs) {
+        cs = ss2.insertSheet(CONTACT_NAME);
+        cs.getRange(1, 1, 1, 4).setValues([['received_at', 'nick', 'contact', 'language']]);
+        cs.setFrozenRows(1);
+      }
+      cs.appendRow([new Date(), data.nick || '', data.contact || '', data.language || '']);
+      return jsonOut({ ok: true, kind: 'contact' });
+    }
 
     var row = {
       received_at:  new Date(),
@@ -88,7 +106,9 @@ function refreshDashboard() {
     return;
   }
   var nowStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm');
-  var out = computeDashboardGrid(resp.getDataRange().getValues(), nowStr);
+  var cSheet = ss.getSheetByName(CONTACT_NAME);
+  var contacts = cSheet ? Math.max(0, cSheet.getLastRow() - 1) : 0;   // minus header
+  var out = computeDashboardGrid(resp.getDataRange().getValues(), nowStr, contacts);
 
   dash.getRange(1, 1, out.grid.length, 3).setValues(out.grid);
   out.bold.forEach(function (i) { dash.getRange(i, 1, 1, 3).setFontWeight('bold'); });
@@ -208,7 +228,7 @@ var G1_ROWS = { 'G1.cdl':'Non-domiciled CDL rule', 'G1.safer':'SAFER Transport A
 /**
  * PURE aggregation (no Spreadsheet APIs) — unit-testable.
  */
-function computeDashboardGrid(values, nowStr) {
+function computeDashboardGrid(values, nowStr, contactCount) {
   var headers = values[0], col = {};
   headers.forEach(function (h, i) { col[h] = i; });
   function get(r, k) { return col.hasOwnProperty(k) ? r[col[k]] : ''; }
@@ -444,8 +464,11 @@ function computeDashboardGrid(values, nowStr) {
   });
   if (!anyOpen) R('(no open answers yet)', '', '');
   B();
-  T('Willing to be interviewed (K2 = yes)');
-  R('Count', countIn('K2', ['yes']), 'contacts collected only in the separate form');
+  T('Interview volunteers');
+  H('Metric', 'Value', '');
+  R('Said yes to an interview (K2)', countIn('K2', ['yes']), '');
+  R('Contacts actually left', (contactCount == null ? 0 : contactCount),
+    'stored in the "' + CONTACT_NAME + '" tab, unlinked to any answers');
 
   return { grid: grid, bold: bold, header: header, kpi: kpi };
 }

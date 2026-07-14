@@ -1,78 +1,88 @@
 # Collect survey responses in a Google Sheet
 
-This connects `index.html` to a Google Sheet you own. Responses land as rows,
-one per submission. Everything stays in **your** Google account — no third-party
-service, and the survey stays anonymous.
+Connects `index.html` to a Google Sheet you own. Everything stays in **your**
+Google account — no third-party service, and the survey stays anonymous.
 
-Total time: ~5 minutes.
+> **Already configured.** `index.html` already points at a deployed Web App.
+> You only need the steps below if you are setting up a **new** sheet, or after
+> you **edit `Code.gs`** (see [Re-publishing](#re-publishing-after-editing-codegs)).
 
 ---
 
-## Step 1 — Create the Sheet
-1. In your browser go to **https://sheets.new** (creates a blank Google Sheet).
-2. Give it a name, e.g. *BPO Survey Responses*.
+## First-time setup (~5 minutes)
 
-## Step 2 — Add the collector script
-1. In the Sheet menu: **Extensions → Apps Script**.
-2. Delete the sample `function myFunction() {}`.
-3. Open [`Code.gs`](./Code.gs) from this folder, copy **all** of it, paste it in.
-4. Click the **Save** icon (💾).
+### 1. Create the Sheet
+Go to **https://sheets.new** and name it, e.g. *BPO Pulse — Responses*.
 
-## Step 3 — Deploy as a Web App
-1. Top-right: **Deploy → New deployment**.
-2. Click the **gear ⚙️** next to "Select type" → choose **Web app**.
+### 2. Add the collector script
+1. **Extensions → Apps Script**
+2. Delete the sample `function myFunction() {}`
+3. Paste **all** of [`Code.gs`](./Code.gs) and **Save** (💾)
+
+### 3. Deploy as a Web App
+1. **Deploy → New deployment**
+2. Gear ⚙️ next to "Select type" → **Web app**
 3. Set:
-   - **Description:** `BPO survey`
-   - **Execute as:** **Me** (your account)
-   - **Who has access:** **Anyone**  ← required so the form can post to it
-4. Click **Deploy**.
-5. Click **Authorize access**, pick your Google account, and allow the permissions.
-   > If you see "Google hasn't verified this app", click **Advanced → Go to
-   > (project name)** → **Allow**. This is normal for your own script.
-6. Copy the **Web app URL** — it ends with **`/exec`**.
+   - **Execute as:** **Me**
+   - **Who has access:** **Anyone** ← required, or the form cannot post
+4. **Deploy** → **Authorize access** → allow the permissions
+   > "Google hasn't verified this app" is normal for your own script:
+   > **Advanced → Go to (project) → Allow**
+5. Copy the **Web app URL** (ends in **`/exec`**)
 
-   *(Optional check: paste that URL into a browser. You should see
-   `{"ok":true,"message":"BPO survey collector is live..."}`.)*
+*Sanity check: open that URL in a browser. You should see*
+`{"ok":true,"message":"BPO Pulse survey collector is live..."}`
 
-## Step 4 — Point the form at your Sheet
-1. Open `index.html` in an editor.
-2. Near the top of the `<script>` find:
-   ```js
-   var CONFIG = { submitEndpoint: null };
-   ```
-3. Replace `null` with your URL in quotes:
-   ```js
-   var CONFIG = { submitEndpoint: "https://script.google.com/macros/s/AKfy..../exec" };
-   ```
-4. Save.
+### 4. Point the form at it
+In `index.html`, near the top of the `<script>`:
 
-## Step 5 — Test
-1. Open `index.html`, pick a role, answer a few questions, click **Submit**.
-2. The page shows "Response sent — thank you".
-3. Check the Sheet — a **Responses** tab now holds the row.
+```js
+var CONFIG = {
+  submitEndpoint: "https://script.google.com/macros/s/AKfy..../exec"
+};
+```
 
-Done. Share `index.html` (host it anywhere, or send the file) and every
-submission appends a row.
+> ⚠️ Watch for a typo here — a stray character (e.g. `hhttps://`) makes the URL
+> invalid, and the form silently falls back to downloading a JSON file instead of
+> posting. If respondents see *"Не удалось связаться с сервером"* instead of
+> *"Ответ отправлен"*, this is why.
+
+### 5. Test
+Fill the form and submit. You should see **"Ответ отправлен — спасибо"**, and a
+row should appear in the **Responses** tab.
 
 ---
 
-## ⚠ Schema changed — clear the old rows first
+## The three tabs
 
-The questionnaire was rebuilt to the «Пульс рынка» specification, so the question
-IDs are completely different (P1–P5, A1–A7, B1–B7, C1–C7, D1–D7, E1–E5, F1–F5,
-G1–G5, H1–H4, I1–I3, J1–J3, K1–K2). Old test rows use the previous schema and
-would be counted as empty responses.
+| Tab | What it holds |
+|---|---|
+| **Responses** | One row per completed survey. Columns are created automatically. |
+| **Contacts** | Interview volunteers (K2 = yes) who chose to leave a contact. |
+| **Dashboard** | Rebuilt automatically after every submission. |
 
-**Before collecting real data: delete the `Responses` tab entirely** (right-click
-the tab → Delete). It is recreated automatically, with the correct columns, on
-the first new submission.
+### Anonymity — how it is preserved
+The **Contacts** record is posted **separately**, and deliberately carries **no
+`responseId`**. It is stored as `received_at | nick | contact | language` only.
+There is therefore **no way to join a contact back to a set of answers** — the
+response base stays anonymous even for people who volunteer for an interview.
+
+No IP, no e-mail, and no Google identity is ever captured.
+
+### How answers look in the Responses tab
+- Single choice / scales / text → the value itself
+- Multi-select → joined with `; ` (e.g. `2fa; dmarc; training`)
+- Grid questions → one column per row, e.g. `G1.cdl`, `G1.safer`, `G1.corca`,
+  `G1.motus`
+- Values are the stable **English keys** (e.g. `yes_loss`, `crit_neg`), never the
+  translated label — so RU / UZ / EN answers aggregate together cleanly
+
+---
 
 ## Live Dashboard
 
-A **Dashboard** tab is rebuilt automatically after every submission, following the
-analysis matrix of the specification (§5).
-
-**Key indices** (highlighted at the top):
+Rebuilt after every submission, following the analysis matrix of the
+specification (§5). **Key indices** are highlighted at the top:
 
 | Index | What it means |
 |---|---|
@@ -84,42 +94,46 @@ analysis matrix of the specification (§5).
 | Broker-classification risk | share of BPO owners on a risky contract model (B5) — SAFER Act exposure |
 | Reported NOWHERE | share of fraud victims who never reported it (F4) |
 
-Then full distributions for: profile (P1–P5), fraud (F1–F5), legislation awareness
-(G1 grid) and impact (G2–G5), cyber (H1–H4, A7), diversification (I1–I3, ID1–ID2),
-BPO owners (B5–B7), drivers (C2–C7), US market (D3–D7), experts (E2–E5),
-support (J1–J3), plus all open answers (K1) and the interview-willing count (K2).
+Then full distributions for: profile (P1–P5), fraud (F1–F5), legislation (G1–G5),
+cyber (H1–H4, A7), diversification (I1–I3, ID1–ID2), BPO owners (B5–B7), drivers
+(C2–C7), US market (D3–D7), experts (E2–E5), support (J1–J3), all open answers
+(K1), and interview volunteers (K2 + contacts actually collected).
 
-Declined-consent responses (S0 = No) are counted separately and excluded from the totals.
+Declined-consent responses (S0 = No) are counted separately and excluded from totals.
 
-To build it any time: **BPO Survey → Refresh dashboard** in the sheet menu, or run
+Rebuild it any time: **BPO Survey → Refresh dashboard** in the sheet menu, or run
 `refreshDashboard` from the Apps Script editor.
 
-> After editing `Code.gs` you must re-publish:
-> **Deploy → Manage deployments → ✏️ (pencil on the EXISTING deployment) →
-> Version: New version → Deploy.**
-> Do **not** use "New deployment" — that creates a different `/exec` URL.
-> The existing URL stays the same, so `index.html` needs no edit.
+---
+
+## Re-publishing after editing `Code.gs`
+
+The Web App is pinned to a **version**, so edits do nothing until you re-publish:
+
+**Deploy → Manage deployments → ✏️ (pencil on the EXISTING deployment) →
+Version: New version → Deploy**
+
+> Do **not** use "New deployment" — that mints a **different `/exec` URL**, and
+> the form will keep posting to the old one.
+> Re-publishing correctly keeps the same URL, so `index.html` needs no edit.
+
+To confirm which version is live, open the `/exec` URL — the message text tells
+you which build answered.
 
 ---
 
 ## Good to know
-- **Columns build themselves.** The first submission creates the header row.
-  Because different roles answer different questions, new columns are added
-  automatically the first time a question is answered — old rows just stay blank
-  in those columns.
-- **How answers look in the sheet**
-  - Single choice / numbers / text → the value itself.
-  - Multi-select → values joined with `; ` (e.g. `dispatch; billing`).
-  - Grid questions → one column each, e.g. `inc_counts.cargo_theft`,
-    `mkt_common.double_broker`.
-  - Values are the stable English keys (e.g. `very_common`), not the translated
-    label, so the data is consistent no matter which language was used.
-- **Anonymous.** Only what the respondent enters is stored. No IP, no email, no
-  Google identity is captured. (The one optional contact field warns the user it
-  ends anonymity if filled.)
-- **If the Sheet is ever unreachable**, the form automatically falls back to
-  downloading the response as a JSON file, so nothing is lost.
-- **Editing the script later?** Re-publish: **Deploy → Manage deployments →
-  pencil ✏️ → Version: New version → Deploy** (the `/exec` URL stays the same).
-- **Analyzing later:** File → Download → CSV, or use the Sheet directly with
-  pivot tables / charts.
+
+- **Submissions are instant.** The form uses `navigator.sendBeacon`, so it does
+  not wait on an Apps Script cold start (1–3 s). The browser delivers the request
+  in the background.
+- **Duplicate clicks are safe.** The submit button locks on first click and the
+  payload (including its `responseId`) is built once, so hammering the button
+  cannot create duplicate rows.
+- **If the Sheet is unreachable**, the form falls back to downloading the
+  response as a JSON file, so nothing is lost.
+- **Columns build themselves.** Different roles answer different questions; new
+  columns appear the first time a question is answered. Older rows just stay
+  blank in those columns.
+- **Analysing later:** File → Download → CSV, or use the Sheet directly with
+  pivot tables and charts.
