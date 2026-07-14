@@ -4,6 +4,8 @@
  * ---------------------------------------------------------------
  * • doPost      — appends ONE ROW per submission to "Responses"
  *                 (columns auto-created; every role fits one sheet).
+ * • Attachments — an optional file from the final question is saved to a Drive
+ *                 folder; the row stores only its name + link.
  * • Contacts    — interview volunteers post a separate {type:"contact"} record.
  *                 It carries NO responseId, so it lands in its own "Contacts"
  *                 tab and can never be joined back to a set of answers.
@@ -24,6 +26,7 @@
 var SHEET_NAME = 'Responses';
 var DASH_NAME  = 'Dashboard';
 var CONTACT_NAME = 'Contacts';
+var FILES_FOLDER = 'BPO Survey — attachments';   // optional files from the final question
 
 /* ============================ WEB APP ============================ */
 
@@ -57,6 +60,23 @@ function doPost(e) {
     };
     flatten(data.answers || {}, '', row);
 
+    /* Optional attachment (K3). Saved to Drive; the row keeps only a link, so the
+       sheet stays light. A bad file must never cost us the answers, hence try/catch. */
+    if (data.attachment && data.attachment.dataB64) {
+      try {
+        var blob = Utilities.newBlob(
+          Utilities.base64Decode(data.attachment.dataB64),
+          data.attachment.type || 'application/octet-stream',
+          data.attachment.name || 'attachment');
+        var file = attachmentFolder().createFile(blob);
+        row.attachment_name = data.attachment.name || '';
+        row.attachment_url  = file.getUrl();
+      } catch (aErr) {
+        row.attachment_name = (data.attachment.name || '') + ' (FAILED)';
+        row.attachment_url  = 'ERROR: ' + aErr;
+      }
+    }
+
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var sheet = ss.getSheetByName(SHEET_NAME) || ss.insertSheet(SHEET_NAME);
 
@@ -82,6 +102,12 @@ function doPost(e) {
   } finally {
     lock.releaseLock();
   }
+}
+
+/* one folder, reused */
+function attachmentFolder() {
+  var it = DriveApp.getFoldersByName(FILES_FOLDER);
+  return it.hasNext() ? it.next() : DriveApp.createFolder(FILES_FOLDER);
 }
 
 function doGet() {

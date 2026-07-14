@@ -27,7 +27,7 @@
     font-family:var(--font-sans);-webkit-font-smoothing:antialiased}
   /* floating glass pill navbar — shown on the first page only */
   .topnav{position:fixed;top:18px;left:0;right:0;z-index:40;display:flex;justify-content:center;
-    pointer-events:none}
+    align-items:flex-start;gap:12px;pointer-events:none}
   body:not(.hero-mode) .topnav{display:none}
   .navpill{pointer-events:auto;display:flex;align-items:center;gap:26px;
     padding:8px 10px 8px 24px;border-radius:999px;
@@ -293,6 +293,123 @@
   .contact-done{padding:16px;border-radius:12px;background:var(--accent-soft);
     color:var(--accent);font-weight:700;text-align:center}
 
+  /* ---- "download guide & research" pill, sitting beside the navbar ---- */
+  .guidewrap{position:relative;pointer-events:auto;
+    animation:rise .5s cubic-bezier(.2,.7,.3,1) .08s both}
+  .guidepill{display:flex;align-items:center;gap:9px;cursor:pointer;border:0;
+    font:inherit;font-size:14.5px;font-weight:650;color:var(--ink);
+    padding:12px 16px;border-radius:999px;white-space:nowrap;
+    background:rgba(255,255,255,.60);
+    -webkit-backdrop-filter:blur(18px) saturate(170%);
+    backdrop-filter:blur(18px) saturate(170%);
+    box-shadow:0 10px 34px rgba(16,32,48,.12), inset 0 1px 0 rgba(255,255,255,.8);
+    transition:transform .18s cubic-bezier(.2,.7,.3,1),box-shadow .18s}
+  .guidepill:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(16,32,48,.18)}
+  .guidepill svg{width:17px;height:17px;fill:none;stroke:var(--accent);stroke-width:2;
+    stroke-linecap:round;stroke-linejoin:round;flex:none}
+  .guidepill .gi-chev{width:15px;height:15px;stroke:var(--muted);margin-left:1px;
+    transition:transform .22s cubic-bezier(.2,.7,.3,1)}
+  .guidepill[aria-expanded="true"] .gi-chev{transform:rotate(180deg)}
+
+  .guidemenu{position:absolute;top:calc(100% + 10px);right:0;width:340px;
+    padding:8px;border-radius:16px;
+    background:rgba(255,255,255,.78);
+    -webkit-backdrop-filter:blur(20px) saturate(170%);
+    backdrop-filter:blur(20px) saturate(170%);
+    box-shadow:0 18px 50px rgba(16,32,48,.20), inset 0 1px 0 rgba(255,255,255,.9);
+    animation:menuIn .22s cubic-bezier(.2,.7,.3,1) both}
+  @keyframes menuIn{from{opacity:0;transform:translateY(-8px) scale(.97)}
+                    to{opacity:1;transform:none}}
+  .guideitem{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:11px;
+    text-decoration:none;color:var(--ink);transition:background .15s,transform .15s}
+  .guideitem:hover{background:var(--accent-soft);transform:translateX(3px)}
+  .gi-badge{flex:none;font-family:var(--font-mono);font-size:10px;font-weight:700;
+    letter-spacing:.06em;color:#fff;background:var(--accent);
+    padding:5px 7px;border-radius:6px}
+  .gi-txt{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .gi-txt b{font-size:14px;font-weight:650;line-height:1.3}
+  .gi-txt i{font-style:normal;font-size:12px;color:var(--muted);
+    font-family:var(--font-mono)}
+  @media (prefers-color-scheme:dark){
+    .guidepill{background:rgba(22,29,43,.62);
+      box-shadow:0 10px 34px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.08)}
+    .guidemenu{background:rgba(22,29,43,.86);
+      box-shadow:0 18px 50px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.08)}
+  }
+  @media (max-width:820px){
+    /* keep the header from wrapping: shrink to an icon-only button */
+    .guidepill{padding:12px}
+    .guidepill #guideLabel,.guidepill .gi-chev{display:none}
+    .guidemenu{width:300px}
+  }
+  @media (max-width:420px){
+    .topnav{gap:8px}
+    .guidemenu{right:auto;left:50%;transform:translateX(-50%);width:min(280px,88vw)}
+  }
+
+  /* ---- "Other, please specify" free-text ---- */
+  .otherinput{margin-top:10px}
+
+  /* ---- optional file attachment ---- */
+  .filedrop{display:flex;align-items:center;gap:12px;cursor:pointer;
+    padding:16px 18px;border-radius:13px;background:var(--bg);
+    border:1.5px dashed var(--line);
+    transition:border-color .16s,background .16s}
+  .filedrop:hover{border-color:var(--accent);background:var(--accent-soft)}
+  .filedrop .fileinput{position:absolute;opacity:0;width:0;height:0}
+  .fd-icon{font-size:19px;flex:none}
+  .fd-txt{flex:1;font-size:15.5px;color:var(--ink);min-width:0;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .fd-clear{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+    background:var(--line);color:var(--muted);font-size:13px;font-weight:700;
+    transition:background .15s,color .15s}
+  .fd-clear:hover{background:var(--danger);color:#fff}
+  .filenote{margin-top:8px;font-size:13px;color:var(--muted)}
+
+  /* ---- "read the guides first" nudge, shown once consent is given ---- */
+  .guide-nudge{display:flex;align-items:center;gap:13px;width:100%;text-align:left;
+    margin-top:24px;padding:14px 16px;border:0;border-radius:13px;cursor:pointer;
+    font:inherit;font-size:14.5px;line-height:1.4;color:#fff;
+    background:rgba(255,255,255,.12);
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.24);
+    opacity:0;transform:translateY(10px);pointer-events:none;
+    transition:opacity .55s cubic-bezier(.2,.7,.3,1),transform .55s cubic-bezier(.2,.7,.3,1),
+               background .18s}
+  /* revealed only after "Yes", and retired once the guides have been opened */
+  body.hero-mode.consented:not(.guide-seen) .guide-nudge{
+    opacity:1;transform:none;pointer-events:auto}
+  .guide-nudge:hover{background:rgba(255,255,255,.2)}
+  .gn-arrow{flex:none;font-size:20px;line-height:1;color:#8fe3f7;
+    animation:gnBob 1.5s ease-in-out infinite}
+  @keyframes gnBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  .gn-txt{flex:1;min-width:0}
+
+  /* ---- the guide pill draws attention while the nudge is up ---- */
+  body.hero-mode.consented:not(.guide-seen) .guidepill{
+    animation:pillGlow 1.9s ease-in-out infinite}
+  @keyframes pillGlow{
+    0%,100%{box-shadow:0 10px 34px rgba(16,32,48,.12),inset 0 1px 0 rgba(255,255,255,.8),
+            0 0 0 0 rgba(15,111,140,.5)}
+    50%    {box-shadow:0 14px 40px rgba(16,32,48,.18),inset 0 1px 0 rgba(255,255,255,.8),
+            0 0 0 11px rgba(15,111,140,0)}
+  }
+  /* a light sweep across the pill — needs the pill to clip its own ::after */
+  .guidepill{position:relative;overflow:hidden}
+  .guidepill::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;
+    background:linear-gradient(105deg,transparent 32%,rgba(255,255,255,.6) 50%,transparent 68%);
+    transform:translateX(-130%)}
+  body.hero-mode.consented:not(.guide-seen) .guidepill::after{
+    opacity:1;animation:pillShine 2.4s ease-in-out infinite}
+  @keyframes pillShine{0%{transform:translateX(-130%)}55%,100%{transform:translateX(130%)}}
+
+  @media (prefers-reduced-motion:reduce){
+    .gn-arrow,
+    body.hero-mode.consented:not(.guide-seen) .guidepill,
+    body.hero-mode.consented:not(.guide-seen) .guidepill::after{animation:none}
+    body.hero-mode.consented:not(.guide-seen) .guidepill::after{opacity:0}
+  }
+
   /* ---- screen 1: hero fills the viewport, with a quiet scroll cue ---- */
   .hero-screen{min-height:calc(100vh - 132px);display:flex;flex-direction:column;
     justify-content:center;align-items:flex-start}
@@ -468,6 +585,7 @@
 </style>
 </head>
 <body>
+
 <!-- floating glass pill: first page only -->
 <header class="topnav">
   <div class="navpill">
@@ -476,6 +594,30 @@
       <button data-lang="ru" class="active">RU</button>
       <button data-lang="uz">O‘Z</button>
       <button data-lang="en">EN</button>
+    </div>
+  </div>
+
+  <!-- materials: the two PDFs live in guides/ and are linked, not embedded,
+       so the page stays light for respondents on mobile data -->
+  <div class="guidewrap">
+    <button class="guidepill" id="guideBtn" aria-expanded="false" aria-controls="guideMenu">
+      <svg class="gi-dl" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 3v11m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+      </svg>
+      <span id="guideLabel"></span>
+      <svg class="gi-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+    </button>
+    <div class="guidemenu" id="guideMenu" hidden>
+      <a class="guideitem" href="guides/freight-fraud-handbook.pdf"
+         download="Freight Fraud Handbook.pdf" target="_blank" rel="noopener">
+        <span class="gi-badge">PDF</span>
+        <span class="gi-txt"><b id="guideT1"></b><i>1.0 MB</i></span>
+      </a>
+      <a class="guideitem" href="guides/bpo-logistics-risk-analysis.pdf"
+         download="Анализ рисков сектора BPO-логистики США.pdf" target="_blank" rel="noopener">
+        <span class="gi-badge">PDF</span>
+        <span class="gi-txt"><b id="guideT2"></b><i>0.7 MB</i></span>
+      </a>
     </div>
   </div>
 </header>
@@ -515,8 +657,12 @@ var IMPACT = [
   O("pos","Rather positive — it will clean up the market","Скорее позитивно — очистит рынок","Ko‘proq ijobiy — bozorni tozalaydi"),
   O("dk","Hard to say","Затрудняюсь ответить","Javob berish qiyin")
 ];
+/* Diversification. Lives in the "US legislation" section (it is a direct
+   consequence of the SAFER bill), but only BPO dispatchers and owners are asked —
+   a US carrier or a driver has no operations to relocate. */
+function I_ROLES(a){ return a.P5==="dispatcher" || a.P5==="owner"; }
 var I_BLOCK = [
-  {id:"I1", type:"single", required:true,
+  {id:"I1", type:"single", required:true, showIf:I_ROLES,
    label:L("Is your company considering moving part of its operations to Mexico or Canada? (the SAFER bill excludes these countries from the definition of a ‘foreign’ dispatch service)",
            "Рассматривает ли ваша компания перенос части операций в Мексику или Канаду? (законопроект SAFER исключает эти страны из определения «иностранной» диспетчерской службы)",
            "Kompaniyangiz operatsiyalarning bir qismini Meksika yoki Kanadaga ko‘chirishni ko‘rib chiqyaptimi? (SAFER loyihasi bu davlatlarni «xorijiy» dispetcherlik xizmati ta’rifidan chiqaradi)"),
@@ -527,7 +673,7 @@ var I_BLOCK = [
      O("stay","No, we plan to stay in Uzbekistan","Нет, планируем остаться в Узбекистане","Yo‘q, O‘zbekistonda qolamiz"),
      O("exit","No — if rules tighten we would rather leave the US market","Нет — при ужесточении скорее уйдём с рынка США","Yo‘q — qattiqlashsa, AQSh bozoridan ketamiz"),
      O("dk","Don’t know / not my decision","Не знаю / решение не за мной","Bilmayman / qaror menda emas")]},
-  {id:"I2", type:"multi", required:true, maxSelect:3,
+  {id:"I2", type:"multi", required:true, maxSelect:3, showIf:I_ROLES,
    label:L("Main barriers to moving operations to Mexico / Canada (choose up to 3):",
            "Главные барьеры для переноса операций в Мексику / Канаду (выберите до 3):",
            "Meksika / Kanadaga ko‘chirishdagi asosiy to‘siqlar (3 tagacha tanlang):"),
@@ -541,7 +687,7 @@ var I_BLOCK = [
      O("law_change","Risk that the law changes again","Риск, что закон снова изменится","Qonun yana o‘zgarishi xavfi"),
      O("none","I see no barriers","Барьеров не вижу","To‘siq ko‘rmayapman"),
      O("dk","Hard to say","Затрудняюсь ответить","Javob berish qiyin")]},
-  {id:"I3", type:"multi", required:true, maxSelect:3,
+  {id:"I3", type:"multi", required:true, maxSelect:3, showIf:I_ROLES,
    label:L("What would most strongly keep the business in Uzbekistan? (choose up to 3)",
            "Что сильнее всего удержало бы бизнес в Узбекистане? (выберите до 3)",
            "Biznesni O‘zbekistonda nima kuchliroq ushlab qolardi? (3 tagacha tanlang)"),
@@ -2103,7 +2249,7 @@ var SECTIONS = [
 { id:"P", step:2,
   title:L("Respondent profile","Профиль респондента","Respondent profili"),
   questions:[
-    {id:"P1", type:"single", required:true,
+    {id:"P1", type:"single", required:true, allowOther:true,
      label:L("Your citizenship:","Ваше гражданство:","Fuqaroligingiz:"),
      options:[
        O("uz","Uzbekistan","Узбекистан","O‘zbekiston"),
@@ -2112,7 +2258,7 @@ var SECTIONS = [
        O("dual","Dual / other combination","Двойное / иное сочетание","Ikki tomonlama / boshqa"),
        O("other","Other","Другое","Boshqa"),
        O("na","Prefer not to answer","Предпочитаю не отвечать","Javob berishni istamayman")]},
-    {id:"P2", type:"single", required:true,
+    {id:"P2", type:"single", required:true, allowOther:true,
      label:L("Where are you physically located most of your working time?","Где вы физически находитесь большую часть рабочего времени?","Ish vaqtingizning ko‘p qismida jismonan qayerdasiz?"),
      options:[
        O("uz","Uzbekistan","Узбекистан","O‘zbekiston"),
@@ -2135,16 +2281,37 @@ var SECTIONS = [
        O("employee","I work at a resident company","Работаю в компании-резиденте","Rezident kompaniyada ishlayman"),
        O("none","Not connected","Не связан(а)","Aloqador emasman"),
        O("dk","Hard to say","Затрудняюсь ответить","Javob berish qiyin")]},
-    {id:"P5", type:"single", required:true, router:true,
+    {id:"P4a", type:"dropdown", required:true,
+     showIf:function(a){ return a.P4==="resident" || a.P4==="employee"; },
+     label:L("In which region is the IT Park resident company registered?",
+             "В каком регионе зарегистрирована компания-резидент IT Park?",
+             "IT Park rezidenti kompaniya qaysi hududda ro‘yxatdan o‘tgan?"),
+     options:[
+       O("tashkent_city","Tashkent city","город Ташкент","Toshkent shahri"),
+       O("tashkent_reg","Tashkent region","Ташкентская область","Toshkent viloyati"),
+       O("andijan","Andijan region","Андижанская область","Andijon viloyati"),
+       O("bukhara","Bukhara region","Бухарская область","Buxoro viloyati"),
+       O("fergana","Fergana region","Ферганская область","Farg‘ona viloyati"),
+       O("jizzakh","Jizzakh region","Джизакская область","Jizzax viloyati"),
+       O("kashkadarya","Kashkadarya region","Кашкадарьинская область","Qashqadaryo viloyati"),
+       O("khorezm","Khorezm region","Хорезмская область","Xorazm viloyati"),
+       O("namangan","Namangan region","Наманганская область","Namangan viloyati"),
+       O("navoi","Navoi region","Навоийская область","Navoiy viloyati"),
+       O("samarkand","Samarkand region","Самаркандская область","Samarqand viloyati"),
+       O("sirdarya","Sirdarya region","Сырдарьинская область","Sirdaryo viloyati"),
+       O("surkhandarya","Surkhandarya region","Сурхандарьинская область","Surxondaryo viloyati"),
+       O("karakalpakstan","Republic of Karakalpakstan","Республика Каракалпакстан","Qoraqalpog‘iston Respublikasi")]},
+
+    {id:"P5", type:"single", required:true, allowOther:true, router:true,
      label:L("Which role best describes you in the industry?","Какая роль лучше всего описывает вас в отрасли?","Sohada sizni qaysi rol eng yaxshi tavsiflaydi?"),
      help:L("This determines the rest of your questions.","От этого зависят дальнейшие вопросы.","Keyingi savollar shunga bog‘liq."),
      options:[
-       O("dispatcher","Dispatcher / BPO operations specialist (dispatch, tracking, safety, documents, billing, hiring)","Диспетчер / операционный специалист BPO (диспетчеризация, трекинг, сейфти, документы, биллинг, найм)","Dispetcher / BPO operatsion mutaxassisi (dispetcherlik, treking, safety, hujjatlar, billing, yollash)"),
+       O("dispatcher","Dispatcher / BPO operations specialist (dispatch, tracking, safety, documents, billing, hiring)","Диспетчер / операционный специалист BPO (диспетчеризация, отслеживание грузов, контроль безопасности, документы, счета, наём)","Dispetcher / BPO operatsion mutaxassisi (dispetcherlik, yuklarni kuzatish, xavfsizlik nazorati, hujjatlar, hisob-fakturalar, yollash)"),
        O("owner","Manager or owner of a BPO / dispatch company","Руководитель или владелец BPO- / диспетчерской компании","BPO / dispetcherlik kompaniyasi rahbari yoki egasi"),
        O("driver","CDL driver / owner-operator","Водитель CDL / владелец-оператор","CDL haydovchi / egasi-operator"),
        O("carrier","Owner or manager of a trucking company (carrier) in the USA","Владелец или руководитель транспортной компании (перевозчик) в США","AQShdagi transport kompaniyasi (tashuvchi) egasi yoki rahbari"),
        O("broker","Broker / freight forwarder / 3PL","Брокер / экспедитор / 3PL","Broker / ekspeditor / 3PL"),
-       O("lawyer","Lawyer / compliance / industry consultant","Юрист / комплаенс / консультант отрасли","Yurist / komplayens / soha maslahatchisi"),
+       O("lawyer","Lawyer / compliance / industry consultant","Юрист / специалист по нормативному соответствию / отраслевой консультант","Yurist / normativ muvofiqlik bo‘yicha mutaxassis / soha maslahatchisi"),
        O("diaspora","Diaspora / NGO / media representative","Представитель диаспоры, общественной организации, СМИ","Diaspora, jamoat tashkiloti, OAV vakili"),
        O("other","Other (insurance, factoring, platform, public sector)","Другое (страхование, факторинг, платформа, госсектор)","Boshqa (sug‘urta, faktoring, platforma, davlat sektori)")]}
   ],
@@ -2161,25 +2328,27 @@ var SECTIONS = [
 { id:"A", step:3,
   title:L("Module A — Dispatcher / BPO specialist","Модуль «Диспетчер / специалист BPO»","A moduli — Dispetcher / BPO mutaxassisi"),
   questions:[
-    {id:"A1", type:"multi", required:true,
+    {id:"A1", type:"multi", required:true, allowOther:true,
      label:L("Your main functions (multiple allowed):","Ваши основные функции (можно несколько):","Asosiy vazifalaringiz (bir nechta bo‘lishi mumkin):"),
      options:[
-       O("dispatch","Dispatching and booking loads","Диспетчеризация и букинг грузов","Dispetcherlik va yuk buking"),
-       O("tracking","Tracking and updates (check calls)","Трекинг и апдейты (check calls)","Treking va yangilanishlar (check calls)"),
-       O("safety","Safety, logbooks / ELD","Сейфти, логбуки / ELD","Safety, logbuk / ELD"),
-       O("docs","Document flow (BOL, POD, invoices)","Документооборот (BOL, POD, инвойсы)","Hujjat aylanmasi (BOL, POD, invoyslar)"),
-       O("billing","Billing / accounting","Биллинг / бухгалтерия","Billing / buxgalteriya"),
-       O("hiring","Hiring and vetting drivers","Найм и проверка водителей","Haydovchilarni yollash va tekshirish"),
-       O("afterhours","Night / weekend support (after-hours)","Ночная / выходная поддержка (after-hours)","Tungi / dam olish kunlari qo‘llab-quvvatlash"),
-       O("carrier_sales","Working on the broker side (carrier sales, etc.)","Работа на стороне брокера (carrier sales и т.п.)","Broker tomonida ishlash (carrier sales va h.k.)"),
+       O("dispatch","Dispatching and booking loads","Диспетчеризация и бронирование грузов","Dispetcherlik va yuklarni bron qilish"),
+       O("tracking","Tracking and updates (check calls)","Отслеживание груза и обновление статуса (check calls)","Yukni kuzatish va holat yangilanishlari (check calls)"),
+       O("safety","Safety, logbooks / ELD","Контроль безопасности (safety), журналы режима труда и отдыха / ELD","Xavfsizlik nazorati (safety), mehnat va dam olish rejimi jurnallari / ELD"),
+       O("docs","Document flow (BOL, POD, invoices)","Документооборот (BOL, POD, счета)","Hujjat aylanmasi (BOL, POD, hisob-fakturalar)"),
+       O("billing","Billing / accounting","Выставление счетов / бухгалтерия","Hisob-fakturalarni rasmiylashtirish / buxgalteriya"),
+       O("hiring","Hiring and vetting drivers","Наём и проверка водителей","Haydovchilarni yollash va tekshirish"),
+       O("afterhours","Night / weekend support (after-hours)","Поддержка в ночное время и в выходные (after-hours)","Tungi va dam olish kunlaridagi qo‘llab-quvvatlash (after-hours)"),
+       O("carrier_sales","Working on the broker side (carrier sales, etc.)","Работа на стороне брокера (привлечение перевозчиков, carrier sales)","Broker tomonida ishlash (tashuvchilarni jalb qilish, carrier sales)"),
        O("other","Other","Другое","Boshqa")]},
-    {id:"A2", type:"single", required:true,
+    {id:"A2", type:"single", required:true, allowOther:true,
      label:L("Who do you mainly serve?","Кого вы в основном обслуживаете?","Asosan kimga xizmat ko‘rsatasiz?"),
      options:[
-       O("uz_carriers","US carriers founded by people from Uzbekistan / Central Asia","Перевозчиков США, основанных выходцами из Узбекистана / ЦА","O‘zbekiston / MO vakillari tashkil etgan AQSh tashuvchilari"),
-       O("us_carriers","American carriers without ‘Uzbek’ roots","Американских перевозчиков без «узбекских» корней","«O‘zbek» ildizisiz amerika tashuvchilari"),
+       O("uz_carriers","US carriers founded by people from Uzbekistan","Перевозчиков США, основанных выходцами из Узбекистана","O‘zbekistonlik vatandoshlar tashkil etgan AQSh tashuvchilari"),
+       O("ca_carriers","US carriers founded by people from other Central Asian countries","Перевозчиков США, основанных выходцами из Центральной Азии","Boshqa Markaziy Osiyo davlatlari vakillari tashkil etgan AQSh tashuvchilari"),
+       O("us_carriers","American carriers without Uzbek or Central Asian roots","Американских перевозчиков без узбекских или центральноазиатских корней","O‘zbek yoki markaziyosiyolik ildizlarsiz amerika tashuvchilari"),
        O("brokers","US brokers / 3PLs","Брокеров / 3PL из США","AQSh brokerlari / 3PL"),
-       O("mixed","A mixed client portfolio","Смешанный портфель клиентов","Aralash mijozlar portfeli")]},
+       O("mixed","A mixed client portfolio","Смешанный портфель клиентов","Aralash mijozlar portfeli"),
+       O("other","Other","Другое","Boshqa")]},
     {id:"A3", type:"single", required:true,
      label:L("How many trucks do you personally handle at the same time?","Сколько грузовиков вы лично ведёте одновременно?","Bir vaqtning o‘zida shaxsan nechta mashinani olib borasiz?"),
      options:[
@@ -2188,13 +2357,22 @@ var SECTIONS = [
        O("11_30","11–30","11–30","11–30"),
        O("30p","More than 30","Более 30","30 dan ortiq"),
        O("none","I do not handle trucks directly","Не веду грузовики напрямую","Mashinalarni bevosita olib bormayman")]},
-    {id:"A4", type:"single", required:true,
+    {id:"A4", type:"single", required:true, allowOther:true,
      label:L("Do you work directly with load boards (DAT, Truckstop, etc.)?","Работаете ли вы напрямую с биржами грузов (DAT, Truckstop и др.)?","Yuk birjalari bilan bevosita ishlaysizmi (DAT, Truckstop va b.)?"),
      options:[
        O("client_acc","Yes, under the client-carrier’s account","Да, под аккаунтом клиента-перевозчика","Ha, mijoz-tashuvchi akkaunti ostida"),
        O("own_acc","Yes, under our company’s account","Да, под аккаунтом нашей компании","Ha, kompaniyamiz akkaunti ostida"),
        O("no_broker","No — the broker / client finds the loads","Нет — грузы находит брокер / клиент","Yo‘q — yuklarni broker / mijoz topadi"),
        O("no_access","No access to load boards","Нет доступа к биржам","Birjalarga kirish yo‘q")]},
+    {id:"A4a", type:"text", required:true,
+     showIf:function(a){ return a.A4==="client_acc" || a.A4==="own_acc"; },
+     label:L("Which load boards do you use? Please list them.",
+             "Какими биржами грузов вы пользуетесь? Перечислите.",
+             "Qaysi yuk birjalaridan foydalanasiz? Sanab o‘ting."),
+     ph:L("e.g. DAT, Truckstop, Highway, 123Loadboard",
+          "например: DAT, Truckstop, Highway, 123Loadboard",
+          "masalan: DAT, Truckstop, Highway, 123Loadboard")},
+
     {id:"A5", type:"single", required:true,
      label:L("Have you faced restrictions on access to US platforms (load boards, ELD, banking) because of an Uzbek IP or verification requirements?","Сталкивались ли вы с ограничениями доступа к платформам США (биржи, ELD, банкинг) из-за узбекского IP или требований верификации?","AQSh platformalariga (birjalar, ELD, banking) o‘zbek IP yoki verifikatsiya talablari tufayli kirish cheklovlariga duch keldingizmi?"),
      options:[
@@ -2215,14 +2393,14 @@ var SECTIONS = [
        O("company","Yes, at the company","Да, в компании","Ha, kompaniyada"),
        O("self","Yes, on my own (courses, webinars)","Да, самостоятельно (курсы, вебинары)","Ha, mustaqil (kurslar, vebinarlar)"),
        O("no","No","Нет","Yo‘q")]}
-  ].concat(I_BLOCK),
+  ],
   next:function(){ return "F"; } },
 
 /* ---------- 5. Module B ---------- */
 { id:"B", step:3,
   title:L("Module B — Manager / owner of a BPO company","Модуль «Руководитель / владелец BPO-компании»","B moduli — BPO kompaniyasi rahbari / egasi"),
   questions:[
-    {id:"B1", type:"single", required:true,
+    {id:"B1", type:"single", required:true, allowOther:true,
      label:L("Legal structure of your business:","Юридическая структура вашего бизнеса:","Biznesingizning huquqiy tuzilmasi:"),
      options:[
        O("uz_res","Only a legal entity in Uzbekistan (IT Park resident)","Только юрлицо в Узбекистане (резидент IT Park)","Faqat O‘zbekistonda yuridik shaxs (IT Park rezidenti)"),
@@ -2245,17 +2423,17 @@ var SECTIONS = [
        O("25_50","25–50 %","25–50 %","25–50 %"),
        O("51_75","51–75 %","51–75 %","51–75 %"),
        O("76_100","76–100 %","76–100 %","76–100 %")]},
-    {id:"B4", type:"multi", required:true,
+    {id:"B4", type:"multi", required:true, allowOther:true,
      label:L("Main services of the company (multiple allowed):","Основные услуги компании (можно несколько):","Kompaniyaning asosiy xizmatlari (bir nechta bo‘lishi mumkin):"),
      options:[
        O("dispatch","Dispatching","Диспетчеризация","Dispetcherlik"),
-       O("tracking","Tracking / updates","Трекинг / апдейты","Treking / yangilanishlar"),
-       O("safety","Safety and compliance","Сейфти и комплаенс","Safety va komplayens"),
-       O("docs","Document flow and billing","Документооборот и биллинг","Hujjat aylanmasi va billing"),
+       O("tracking","Tracking / updates","Отслеживание грузов / обновление статусов","Yuklarni kuzatish / holat yangilanishlari"),
+       O("safety","Safety and compliance","Контроль безопасности и нормативное соответствие","Xavfsizlik nazorati va normativ muvofiqlik"),
+       O("docs","Document flow and billing","Документооборот и выставление счетов","Hujjat aylanmasi va hisob-fakturalar"),
        O("accounting","Accounting","Бухгалтерия","Buxgalteriya"),
-       O("hiring","Driver hiring","Найм водителей","Haydovchilarni yollash"),
-       O("carrier_sales","Broker support (carrier sales)","Поддержка брокеров (carrier sales)","Brokerlarni qo‘llab-quvvatlash (carrier sales)"),
-       O("it","IT development / automation","IT-разработка / автоматизация","IT ishlab chiqish / avtomatlashtirish"),
+       O("hiring","Driver hiring","Наём водителей","Haydovchilarni yollash"),
+       O("carrier_sales","Broker support (carrier sales)","Поддержка брокеров (привлечение перевозчиков)","Brokerlarni qo‘llab-quvvatlash (tashuvchilarni jalb qilish)"),
+       O("it","IT development / automation","Разработка ПО / автоматизация","Dasturiy ta’minot ishlab chiqish / avtomatlashtirish"),
        O("other","Other","Другое","Boshqa")]},
     {id:"B5", type:"single", required:true,
      label:L("How are relations with client-carriers formalised?","Как оформлены отношения с клиентами-перевозчиками?","Mijoz-tashuvchilar bilan munosabatlar qanday rasmiylashtirilgan?"),
@@ -2282,20 +2460,21 @@ var SECTIONS = [
        O("relocate","We will move operations to Mexico / Canada","Перенесём операции в Мексику / Канаду","Operatsiyalarni Meksika / Kanadaga ko‘chiramiz"),
        O("exit","We will wind down work with the US market","Свернём работу с рынком США","AQSh bozori bilan ishni to‘xtatamiz"),
        O("dk","Hard to say","Затрудняюсь ответить","Javob berish qiyin")]}
-  ].concat(I_BLOCK),
+  ],
   next:function(){ return "F"; } },
 
 /* ---------- 6. Module C-1 ---------- */
 { id:"C1", step:3,
   title:L("Module C — CDL driver / owner-operator","Модуль «Водитель CDL / владелец-оператор»","C moduli — CDL haydovchi / egasi-operator"),
   questions:[
-    {id:"C1", type:"single", required:true,
+    {id:"C1", type:"single", required:true, allowOther:true,
      label:L("Your working format:","Ваш формат работы:","Ish formatingiz:"),
      options:[
        O("company_driver","Company driver","Наёмный водитель (company driver)","Yollanma haydovchi (company driver)"),
        O("oo_authority","Owner-operator with own authority","Владелец-оператор со своим authority","Egasi-operator o‘z authority bilan"),
        O("lease_on","Owner-operator leased on to a carrier","Владелец-оператор в лизинге на перевозчика (lease-on)","Egasi-operator tashuvchiga lizingda (lease-on)"),
-       O("unemployed","Currently out of work in the industry","Сейчас без работы в отрасли","Hozir sohada ishsizman")]},
+       O("unemployed","Currently out of work in the industry","Сейчас без работы в отрасли","Hozir sohada ishsizman"),
+       O("other","Other","Другое","Boshqa")]},
     {id:"C2", type:"single", required:true,
      label:L("Your immigration status in the USA:","Ваш иммиграционный статус в США:","AQShdagi immigratsiya maqomingiz:"),
      help:L("Sensitive question: required, but with an option to decline.","Чувствительный вопрос: обязателен, но с опцией отказа от ответа.","Nozik savol: majburiy, lekin javob bermaslik imkoni bor."),
@@ -2343,7 +2522,7 @@ var SECTIONS = [
        O("confident","Confidently on work topics","Уверенно на рабочие темы","Ish mavzularida ishonchli"),
        O("basic","With difficulty, basic phrases","С трудом, базовые фразы","Qiyinchilik bilan, oddiy iboralar"),
        O("none","Practically do not speak","Практически не говорю","Deyarli gapirmayman")]},
-    {id:"C5", type:"single", required:true,
+    {id:"C5", type:"single", required:true, allowOther:true,
      label:L("Who finds loads for you / dispatches you?","Кто находит вам грузы / диспетчирует вас?","Sizga kim yuk topadi / dispetcherlik qiladi?"),
      options:[
        O("uz_dispatcher","A dispatcher from Uzbekistan","Диспетчер из Узбекистана","O‘zbekistondagi dispetcher"),
@@ -2407,7 +2586,7 @@ var SECTIONS = [
        O("timezone","Time-zone difference","Разница часовых поясов","Vaqt mintaqasi farqi"),
        O("none","No barriers — the experience is positive","Барьеров нет — опыт положительный","To‘siq yo‘q — tajriba ijobiy"),
        O("na","I do not work with foreign services","Не работаю с зарубежными сервисами","Xorijiy xizmatlar bilan ishlamayman")]},
-    {id:"D5", type:"multi", required:true,
+    {id:"D5", type:"multi", required:true, allowOther:true,
      label:L("How do you vet new counterparties? (multiple allowed)","Как вы проверяете новых контрагентов? (можно несколько)","Yangi kontragentlarni qanday tekshirasiz? (bir nechta)"),
      options:[
        O("safer","FMCSA SAFER","FMCSA SAFER","FMCSA SAFER"),
@@ -2417,7 +2596,8 @@ var SECTIONS = [
        O("callback","Call back on the phone number from the FMCSA database","Обратный звонок по телефону из базы FMCSA","FMCSA bazasidagi raqamga qayta qo‘ng‘iroq"),
        O("insurance","Checking the insurance certificate directly with the agent","Проверка страхового сертификата напрямую у агента","Sug‘urta sertifikatini agent orqali bevosita tekshirish"),
        O("domain","Checking the sender’s domain / e-mail (domain age, DMARC)","Проверка домена / e-mail отправителя (возраст домена, DMARC)","Jo‘natuvchi domeni / e-mailini tekshirish (domen yoshi, DMARC)"),
-       O("none","There is no systematic check","Системной проверки нет","Tizimli tekshiruv yo‘q")]},
+       O("none","There is no systematic check","Системной проверки нет","Tizimli tekshiruv yo‘q"),
+       O("other","Other","Другое","Boshqa")]},
     {id:"D6", type:"single", required:true,
      label:L("Your company’s losses from fraud and non-payment in 2024–2026:","Потери вашей компании от мошенничества и неплатежей за 2024–2026 гг.:","2024–2026 yillarda kompaniyangizning firibgarlik va to‘lovsizlikdan yo‘qotishlari:"),
      options:[
@@ -2445,7 +2625,7 @@ var SECTIONS = [
      label:L("For you, a dispatch team physically located in Mexico / Canada is:","Диспетчерская команда, физически размещённая в Мексике / Канаде, для вас:","Jismonan Meksika / Kanadada joylashgan dispetcherlik jamoasi siz uchun:"),
      options:[
        O("acceptable","An acceptable alternative to offshore","Приемлемая альтернатива офшору","Ofshorga maqbul muqobil"),
-       O("indifferent","No difference — quality and compliance matter","Без разницы — важны качество и комплаенс","Farqi yo‘q — sifat va komplayens muhim"),
+       O("indifferent","No difference — quality and compliance matter","Без разницы — важны качество и соблюдение требований","Farqi yo‘q — sifat va talablarga rioya qilish muhim"),
        O("better","Better than offshore, but worse than a US team","Лучше офшора, но хуже команды в США","Ofshordan yaxshi, lekin AQSh jamoasidan yomon"),
        O("unacceptable","Unacceptable — only staff in the USA","Неприемлема — только персонал в США","Nomaqbul — faqat AQShdagi xodimlar"),
        O("dk","Hard to say","Затрудняюсь ответить","Javob berish qiyin")]}
@@ -2456,17 +2636,17 @@ var SECTIONS = [
 { id:"E", step:3,
   title:L("Module E — Lawyer / diaspora / expert","Модуль «Юрист / диаспора / эксперт / прочее»","E moduli — Yurist / diaspora / ekspert"),
   questions:[
-    {id:"E1", type:"single", required:true,
+    {id:"E1", type:"single", required:true, allowOther:true,
      label:L("Your profile:","Ваш профиль:","Profilingiz:"),
      options:[
-       O("lawyer","Lawyer / attorney","Юрист / атторней","Yurist / attorney"),
-       O("compliance","Compliance, audit, insurance, factoring","Комплаенс, аудит, страхование, факторинг","Komplayens, audit, sug‘urta, faktoring"),
+       O("lawyer","Lawyer / attorney","Юрист / адвокат","Yurist / advokat"),
+       O("compliance","Compliance, audit, insurance, factoring","Нормативное соответствие (комплаенс), аудит, страхование, факторинг","Normativ muvofiqlik, audit, sug‘urta, faktoring"),
        O("community","Leader / activist of an NGO or the diaspora","Лидер / актив общественной организации, диаспоры","Jamoat tashkiloti, diaspora yetakchisi / faoli"),
        O("media","Media, blogger, analyst","СМИ, блогер, аналитик","OAV, bloger, tahlilchi"),
        O("platform","Technology platform / service","Технологическая платформа / сервис","Texnologik platforma / servis"),
        O("gov","Public sector","Государственный сектор","Davlat sektori"),
        O("other","Other","Другое","Boshqa")]},
-    {id:"E2", type:"multi", required:true, maxSelect:3,
+    {id:"E2", type:"multi", required:true, allowOther:true, maxSelect:3,
      label:L("Which problems of the ‘Uzbek segment’ of the industry do you encounter most often? (choose up to 3)","С какими проблемами «узбекского сегмента» отрасли вы сталкиваетесь чаще всего? (выберите до 3)","Sohaning «o‘zbek segmenti» muammolaridan qaysilariga ko‘proq duch kelasiz? (3 tagacha)"),
      options:[
        O("nonpayment","Non-payment to drivers and dispatchers","Невыплаты водителям и диспетчерам","Haydovchi va dispetcherlarga to‘lanmaslik"),
@@ -2524,7 +2704,7 @@ var SECTIONS = [
 { id:"FD", step:5,
   title:L("Incident details","Детали инцидентов","Hodisa tafsilotlari"),
   questions:[
-    {id:"F2", type:"multi", required:true,
+    {id:"F2", type:"multi", required:true, allowOther:true,
      label:L("Which schemes did you encounter? (multiple allowed)","С какими схемами столкнулись? (можно несколько)","Qaysi sxemalarga duch keldingiz? (bir nechta)"),
      options:[
        O("double_broker","Double / triple brokering","Двойной / тройной брокеридж","Ikki / uch tomonlama brokerlik"),
@@ -2546,7 +2726,7 @@ var SECTIONS = [
        O("50_200k","$50–200k","$50–200 тыс.","$50–200 ming"),
        O("200kp","More than $200k","Более $200 тыс.","$200 mingdan ortiq"),
        O("na","Hard to say / confidential","Затрудняюсь / конфиденциально","Qiyin / maxfiy")]},
-    {id:"F4", type:"multi", required:true,
+    {id:"F4", type:"multi", required:true, allowOther:true,
      label:L("Where did you turn for help? (multiple allowed)","Куда обращались? (можно несколько)","Qayerga murojaat qildingiz? (bir nechta)"),
      options:[
        O("police","Police / FBI (IC3)","Полиция / ФБР (IC3)","Politsiya / FBI (IC3)"),
@@ -2555,7 +2735,8 @@ var SECTIONS = [
        O("insurance","Insurance company","Страховая компания","Sug‘urta kompaniyasi"),
        O("lawyers","Lawyers","Юристы","Yuristlar"),
        O("itpark","IT Park / Uzbek state bodies","IT Park / госорганы Узбекистана","IT Park / O‘zbekiston davlat organlari"),
-       O("nowhere","Did not turn anywhere","Никуда не обращались","Hech qayerga murojaat qilmadik")]},
+       O("nowhere","Did not turn anywhere","Никуда не обращались","Hech qayerga murojaat qilmadik"),
+       O("other","Other","Другое","Boshqa")]},
     {id:"F5", type:"single", required:true,
      label:L("What was the outcome of the most significant incident?","Каков итог по самому значимому инциденту?","Eng jiddiy hodisa bo‘yicha natija qanday?"),
      options:[
@@ -2591,6 +2772,7 @@ var SECTIONS = [
     {id:"G3", type:"single", required:true,
      label:L("How will the non-domiciled CDL restrictions and English (ELP) checks affect the segment you work in?","Как ограничения non-domiciled CDL и проверки английского (ELP) повлияют на сегмент, в котором вы работаете?","Non-domiciled CDL cheklovlari va ingliz tili (ELP) tekshiruvlari siz ishlaydigan segmentga qanday ta’sir qiladi?"),
      options:IMPACT},
+  ].concat(I_BLOCK, [
     {id:"G4", type:"scale5", required:true,
      label:L("Your attitude to tightening control in the industry overall:","Ваше отношение к ужесточению контроля в отрасли в целом:","Sohada nazoratni qattiqlashtirishga munosabatingiz:"),
      anchorLow:L("Strongly against","Категорически против","Mutlaqo qarshi"),
@@ -2604,26 +2786,27 @@ var SECTIONS = [
        O("registry","Create a national registry and certification to restore trust","Создать национальный реестр и сертификацию, чтобы вернуть доверие","Ishonchni qaytarish uchun milliy reestr va sertifikatlash yaratish"),
        O("enforce","Toughen liability for fraud inside the country","Ужесточить ответственность за мошенничество внутри страны","Mamlakat ichida firibgarlik uchun javobgarlikni kuchaytirish"),
        O("nothing","Nothing — the market will regulate itself","Ничего — рынок отрегулирует себя сам","Hech narsa — bozor o‘zini o‘zi tartibga soladi"),
-       O("other","Other","Другое","Boshqa")]}
-  ],
+       O("other","Other","Другое","Boshqa")], allowOther:true}
+  ]),
   next:function(){ return "H"; } },
 
 /* ---------- 14. Cyber ---------- */
 { id:"H", step:7,
   title:L("Cyber-security","Кибербезопасность","Kiberxavfsizlik"),
   questions:[
-    {id:"H1", type:"multi", required:true,
+    {id:"H1", type:"multi", required:true, allowOther:true,
      label:L("Which protective measures are actually used at your workplace / company? (multiple allowed)","Какие меры защиты реально используются на вашем рабочем месте / в компании? (можно несколько)","Ish joyingizda / kompaniyada qaysi himoya choralari amalda qo‘llanadi? (bir nechta)"),
      options:[
        O("2fa","Two-factor authentication (2FA / MFA)","Двухфакторная аутентификация (2FA / MFA)","Ikki faktorli autentifikatsiya (2FA / MFA)"),
-       O("fido2","Hardware keys or passkeys (FIDO2)","Аппаратные ключи или passkeys (FIDO2)","Apparat kalitlar yoki passkeys (FIDO2)"),
+       O("fido2","Hardware keys or passkeys (FIDO2)","Аппаратные ключи или passkey-ключи (FIDO2)","Apparat kalitlar yoki passkey kalitlari (FIDO2)"),
        O("sso","Single sign-on (SSO)","Единый вход (SSO)","Yagona kirish (SSO)"),
-       O("edr","Corporate devices with EDR / modern antivirus","Корпоративные устройства с EDR / современным антивирусом","EDR / zamonaviy antivirusli korporativ qurilmalar"),
+       O("edr","Corporate devices with EDR / modern antivirus","Корпоративные устройства с системой защиты EDR / современным антивирусом","EDR himoya tizimi / zamonaviy antivirusli korporativ qurilmalar"),
        O("no_byod","Personal devices banned for work","Запрет личных устройств для работы","Ish uchun shaxsiy qurilmalar taqiqlangan"),
        O("dmarc","SPF / DKIM / DMARC on the mail domain","SPF / DKIM / DMARC на почтовом домене","Pochta domenida SPF / DKIM / DMARC"),
-       O("training","Regular phishing training","Регулярные тренинги по фишингу","Muntazam fishing bo‘yicha treninglar"),
+       O("training","Regular phishing training","Регулярное обучение распознаванию фишинга","Fishingni aniqlash bo‘yicha muntazam o‘qitish"),
        O("none","None of the above","Ничего из перечисленного","Yuqoridagilarning hech biri"),
-       O("dk","I don’t know","Не знаю","Bilmayman")]},
+       O("dk","I don’t know","Не знаю","Bilmayman"),
+       O("other","Other","Другое","Boshqa")]},
     {id:"H2", type:"single", required:true,
      label:L("Do you (your company) confirm a change of a counterparty’s payment details with a call-back to an independent number?","Изменение платёжных реквизитов контрагента вы (ваша компания) подтверждаете обратным звонком по независимому номеру:","Kontragentning to‘lov rekvizitlari o‘zgarishini mustaqil raqamga qayta qo‘ng‘iroq bilan tasdiqlaysizmi?"),
      options:[
@@ -2649,7 +2832,7 @@ var SECTIONS = [
 { id:"J", step:8,
   title:L("Support measures and forecast","Меры поддержки и прогноз","Qo‘llab-quvvatlash choralari va prognoz"),
   questions:[
-    {id:"J1", type:"multi", required:true, maxSelect:3,
+    {id:"J1", type:"multi", required:true, allowOther:true, maxSelect:3,
      label:L("Which support measures does the market need first? (choose up to 3)","Какие меры поддержки нужны рынку в первую очередь? (выберите до 3)","Bozorga birinchi navbatda qanday qo‘llab-quvvatlash choralari kerak? (3 tagacha)"),
      options:[
        O("mou","Uzbekistan–US talks: MOU with FMCSA and the platforms (DAT, Truckstop, Highway)","Переговоры Узбекистан—США: MOU с FMCSA и платформами (DAT, Truckstop, Highway)","O‘zbekiston—AQSh muzokaralari: FMCSA va platformalar bilan MOU (DAT, Truckstop, Highway)"),
@@ -2658,7 +2841,7 @@ var SECTIONS = [
        O("legal_center","A legal aid centre for disputes and cases in the USA","Центр юридической помощи по спорам и делам в США","AQShdagi nizolar va ishlar bo‘yicha yuridik yordam markazi"),
        O("bond","Help with broker registration and the $75k bond","Помощь с брокерской регистрацией и бондом $75 тыс.","Broker ro‘yxati va $75 ming bond bo‘yicha yordam"),
        O("hub","A support programme for offices in Mexico / Canada","Программа поддержки офисов в Мексике / Канаде","Meksika / Kanadadagi ofislarni qo‘llab-quvvatlash dasturi"),
-       O("training","Training: English, compliance, anti-fraud","Обучение: английский, комплаенс, антифрод","O‘qitish: ingliz tili, komplayens, antifrod"),
+       O("training","Training: English, compliance, anti-fraud","Обучение: английский язык, нормативное соответствие, противодействие мошенничеству","O‘qitish: ingliz tili, normativ muvofiqlik, firibgarlikka qarshi kurash"),
        O("blacklist","An industry ‘blacklist’ of fraudsters and a hotline","Отраслевой «чёрный список» мошенников и горячая линия","Firibgarlarning soha «qora ro‘yxati» va ishonch telefoni"),
        O("cyber_ins","Cyber-insurance for BPO companies","Киберстрахование для BPO-компаний","BPO kompaniyalari uchun kibersug‘urta"),
        O("other","Other","Другое","Boshqa")]},
@@ -2686,10 +2869,19 @@ var SECTIONS = [
   questions:[
     {id:"K1", type:"paragraph", required:false,
      label:L("Share a case, a problem or an idea that this survey did not cover (please — no names of people or companies):","Поделитесь кейсом, проблемой или идеей, которые не вошли в опрос (просьба — без имён и названий компаний):","So‘rovnomaga kirmagan keys, muammo yoki g‘oyani baham ko‘ring (iltimos — ism va kompaniya nomlarisiz):")},
+    {id:"K3", type:"file", required:false,
+     label:L("Attach a document, if you have one (optional)",
+             "Приложите документ, если он у вас есть (необязательно)",
+             "Agar hujjatingiz bo‘lsa, biriktiring (ixtiyoriy)"),
+     help:L("A case description, evidence, a proposal — anything you think is useful.",
+            "Описание кейса, доказательства, предложение — всё, что считаете полезным.",
+            "Keys tavsifi, dalillar, taklif — foydali deb bilgan har narsa."),
+     cta:L("Choose a file","Выбрать файл","Fayl tanlash")},
+
     {id:"K2", type:"single", required:true,
      label:L("Would you be willing to take part in a short confidential interview (15–20 minutes)?","Готовы ли вы к короткому конфиденциальному интервью (15–20 минут)?","Qisqa maxfiy intervyuga (15–20 daqiqa) tayyormisiz?"),
      options:[
-       O("yes","Yes — after submitting I will follow the link and leave a contact","Да — после отправки формы перейду по ссылке и оставлю контакт","Ha — yuborgach, havola orqali kontakt qoldiraman"),
+       O("yes","Yes — I will leave a contact after submitting","Да — оставлю контакт после отправки формы","Ha — shakl yuborilgandan so‘ng kontakt qoldiraman"),
        O("no","No","Нет","Yo‘q")]}
   ],
   next:function(){ return "SUBMIT"; } }
@@ -2722,9 +2914,18 @@ var UI = {
     sendFail:"Не удалось связаться с сервером — ответ сохранён в файл.",
     thanksH:"Спасибо за участие!",
     thanksP:"Ваш анонимный ответ записан. Результаты будут использованы только в обобщённом виде — для разработки мер поддержки отрасли.",
-    thanksContact:"Вы отметили готовность к интервью. Оставьте контакт в отдельной форме — так основная база остаётся полностью обезличенной:",
+    thanksContact:"Вы отметили готовность к интервью. Контакт сохраняется отдельно от ответов, поэтому опрос остаётся полностью анонимным.",
     contactLink:"Оставить контакт",
     scrollCue:"Пролистайте вниз",
+    otherPh:"Укажите свой вариант",
+    errOther:"Пожалуйста, уточните свой вариант.",
+    fileLimit:"PDF, DOC, DOCX или TXT · до %s МБ · необязательно",
+    fileType:"Допустимы только файлы PDF, DOC, DOCX или TXT.",
+    fileTooBig:"Файл слишком большой. Максимум %s МБ.",
+    guideBtn:"Гайд и исследование",
+    nudge:"Сначала откройте «Гайд и исследование» наверху — так вы ответите точнее",
+    guideT1:"Справочник по мошенничеству в грузоперевозках",
+    guideT2:"Анализ рисков сектора BPO-логистики США",
     sending:"Отправка…",
     contactNick:"Имя или ник",
     contactHandle:"Telegram или e-mail",
@@ -2751,9 +2952,18 @@ var UI = {
     sendFail:"Serverga ulanib bo‘lmadi — javob faylga saqlandi.",
     thanksH:"Ishtirokingiz uchun rahmat!",
     thanksP:"Anonim javobingiz qayd etildi. Natijalar faqat umumlashtirilgan holda — sohani qo‘llab-quvvatlash choralarini ishlab chiqish uchun ishlatiladi.",
-    thanksContact:"Siz intervyuga tayyorligingizni bildirdingiz. Kontaktni alohida shaklda qoldiring — shunda asosiy baza to‘liq anonim qoladi:",
+    thanksContact:"Siz intervyuga tayyorligingizni bildirdingiz. Kontakt javoblardan alohida saqlanadi, shuning uchun so‘rovnoma to‘liq anonim qoladi.",
     contactLink:"Kontakt qoldirish",
     scrollCue:"Pastga suring",
+    otherPh:"O‘z variantingizni yozing",
+    errOther:"Iltimos, o‘z variantingizni aniqlashtiring.",
+    fileLimit:"PDF, DOC, DOCX yoki TXT · %s MB gacha · ixtiyoriy",
+    fileType:"Faqat PDF, DOC, DOCX yoki TXT fayllar qabul qilinadi.",
+    fileTooBig:"Fayl juda katta. Maksimal %s MB.",
+    guideBtn:"Qo‘llanma va tadqiqot",
+    nudge:"Avval yuqoridagi «Qo‘llanma va tadqiqot»ni oching — shunda aniqroq javob berasiz",
+    guideT1:"Yuk tashishdagi firibgarlik bo‘yicha qo‘llanma",
+    guideT2:"AQSh BPO-logistika sohasi risklari tahlili",
     sending:"Yuborilmoqda…",
     contactNick:"Ism yoki nik",
     contactHandle:"Telegram yoki e-mail",
@@ -2780,9 +2990,18 @@ var UI = {
     sendFail:"Could not reach the server — the response was saved to a file.",
     thanksH:"Thank you for taking part!",
     thanksP:"Your anonymous response has been recorded. Results will be used only in aggregated form — to design support measures for the industry.",
-    thanksContact:"You indicated willingness to be interviewed. Please leave a contact in a separate form — this keeps the main database fully anonymous:",
+    thanksContact:"You said you are willing to be interviewed. Your contact is stored separately from your answers, so the survey stays fully anonymous.",
     contactLink:"Leave a contact",
     scrollCue:"Scroll down",
+    otherPh:"Please specify",
+    errOther:"Please specify your answer.",
+    fileLimit:"PDF, DOC, DOCX or TXT · up to %s MB · optional",
+    fileType:"Only PDF, DOC, DOCX or TXT files are accepted.",
+    fileTooBig:"That file is too large. Maximum %s MB.",
+    guideBtn:"Guide & research",
+    nudge:"Open “Guide & research” at the top first — it will help you answer more precisely",
+    guideT1:"Freight fraud handbook",
+    guideT2:"US BPO-logistics risk analysis",
     sending:"Sending…",
     contactNick:"Name or nickname",
     contactHandle:"Telegram or e-mail",
@@ -2807,13 +3026,36 @@ var errors={};
 
 function t(o){ return o ? (o[lang]||o.ru||o.en) : ""; }
 function S(id){ for(var i=0;i<SECTIONS.length;i++) if(SECTIONS[i].id===id) return SECTIONS[i]; return null; }
+
+/* Questions may be conditional (q.showIf). Everything that walks a section —
+   rendering, validation, completeness, the submitted payload — must agree on
+   which questions are actually on screen, or a hidden question could block the
+   Next button forever. */
+function visibleQs(sec){
+  return sec.questions.filter(function(q){
+    return !q.showIf || !!q.showIf(answers);
+  });
+}
+/* signature of what is on screen, so we know when a conditional reveal happens */
+function visSig(sec){
+  return visibleQs(sec).map(function(q){
+    var extra = q.allowOther && otherChosen(q) ? "+o" : "";
+    return q.id + extra;
+  }).join(",");
+}
+function otherChosen(q){
+  var v = answers[q.id];
+  if(q.type==="multi") return Array.isArray(v) && v.indexOf("other")!==-1;
+  return v==="other";
+}
 function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 function fmt(s,v){ return String(s).replace("%s",v); }
 
 /* ---------- render ---------- */
-function render(){
+function render(keepScroll){
   var u=UI[lang];
   document.documentElement.lang=lang;
+  paintGuideLabels();
 
   if(done){ stopGlobe(); renderThanks(); return; }
   document.body.classList.remove("done-mode");
@@ -2853,6 +3095,13 @@ function render(){
            'style="--art:url(data:image/jpeg;base64,'+CONSENT_IMG+')"></div>';
     h+=  '<div class="consent-content">';
     sec.questions.forEach(function(q){ h+=renderQ(q); });
+    /* once they consent, point them at the guides before they start answering.
+       Rendered always; CSS reveals it only when consent is given and the guides
+       have not been opened yet — so no re-render is needed. */
+    h+=   '<button class="guide-nudge" id="guideNudge">'+
+            '<span class="gn-arrow">&#8593;</span>'+
+            '<span class="gn-txt">'+esc(u.nudge)+'</span>'+
+          '</button>';
     h+=   '<div class="hero-next">'+
             '<button class="nextbig" id="heroNext">'+esc(u.next)+' <span class="ar">&#8594;</span></button>'+
           '</div>';
@@ -2865,7 +3114,7 @@ function render(){
     card+='<div class="step">'+fmt(u.progress,sec.step)+'</div>';
     card+='<h1 class="sect">'+t(sec.title)+'</h1>';
     if(sec.desc) card+='<div class="sdesc">'+esc(t(sec.desc))+'</div>';
-    sec.questions.forEach(function(q){ card+=renderQ(q); });
+    visibleQs(sec).forEach(function(q){ card+=renderQ(q); });
     card+=renderSectNav();
     card+='</section>';
     /* the dead-end "declined" page gets no stepper */
@@ -2888,7 +3137,7 @@ function render(){
   unwireHeroScroll();
   if(sec.hero){ startGlobe(); wireHeroScroll(); }
 
-  window.scrollTo(0,0);
+  if(!keepScroll) window.scrollTo(0,0);
   requestAnimationFrame(measureScrollbar);   /* scrollbar only exists once content is laid out */
 }
 
@@ -2906,6 +3155,12 @@ function wireHeroScroll(){
   var cue=document.getElementById("scrollcue");
   var next=document.getElementById("heroNext");
   if(next) next.addEventListener("click", goNext);
+  var nudge=document.getElementById("guideNudge");
+  if(nudge) nudge.addEventListener("click", function(e){
+    e.stopPropagation();
+    openGuide();
+    window.scrollTo({top:0, behavior:"smooth"});   /* bring the pill into view */
+  });
   if(!panel) return;
 
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -2951,6 +3206,10 @@ function wireHeroScroll(){
 /* The bottom bar is hidden on the first page until consent is chosen, so it
    does not sit there taking space. Everywhere else it is always available. */
 function updateAdvanceState(){
+  document.body.classList.toggle("guide-seen", guideSeen);
+  /* keyed to actual consent — "No" is also an answer, and we must not tell
+     someone who just declined to go and read the guides */
+  document.body.classList.toggle("consented", answers.S0==="yes");
   var sec=S(current);
   var ok = sec.hero ? !!answers.S0 : sectionComplete(sec);
   document.body.classList.toggle("can-advance", ok);
@@ -3525,18 +3784,63 @@ function renderQ(q){
     }
     h+='</div><div class="anchor r">'+t(q.anchorHigh)+' — 5</div></div>';
   }
+  else if(q.type==="text"){
+    h+='<input type="text" name="'+q.id+'" value="'+esc(answers[q.id]||"")+'" '+
+         'placeholder="'+esc(t(q.ph)||"")+'">';
+  }
+  else if(q.type==="file"){
+    var f = attachedFile;
+    h+='<label class="filedrop" for="'+q.id+'">'+
+         '<input type="file" id="'+q.id+'" class="fileinput" '+
+           'accept=".pdf,.doc,.docx,.txt,application/pdf,application/msword,'+
+           'application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain">'+
+         '<span class="fd-icon">📎</span>'+
+         '<span class="fd-txt">'+(f ? esc(f.name)+' · '+fileSize(f.size)
+                                    : esc(t(q.cta)))+'</span>'+
+         (f ? '<span class="fd-clear" id="'+q.id+'_clear">✕</span>' : '')+
+       '</label>';
+    h+='<div class="filenote">'+esc(fmt(UI[lang].fileLimit, MAX_FILE_MB))+'</div>';
+  }
   else if(q.type==="paragraph"){
     h+='<textarea name="'+q.id+'">'+esc(answers[q.id]||"")+'</textarea>';
   }
 
+  if(q.allowOther && otherChosen(q)){
+    h+='<input type="text" class="otherinput" name="'+q.id+'_other" '+
+         'placeholder="'+esc(t(q.otherPh)||UI[lang].otherPh)+'" '+
+         'value="'+esc(answers[q.id+"_other"]||"")+'">';
+  }
   if(bad) h+='<div class="err">'+bad+'</div>';
   h+='</div>';
   return h;
 }
 
+/* ---------- file attachment (final section, optional) ---------- */
+var MAX_FILE_MB = 5;
+var ALLOWED_EXT = ["pdf","doc","docx","txt"];
+var attachedFile = null;
+
+function fileSize(b){
+  return b < 1024*1024 ? (b/1024).toFixed(0)+" KB" : (b/1048576).toFixed(1)+" MB";
+}
+function acceptFile(f){
+  if(!f) return false;
+  var ext = (f.name.split(".").pop()||"").toLowerCase();
+  if(ALLOWED_EXT.indexOf(ext)===-1){ toast(UI[lang].fileType); return false; }
+  if(f.size > MAX_FILE_MB*1024*1024){ toast(fmt(UI[lang].fileTooBig, MAX_FILE_MB)); return false; }
+  return true;
+}
+
 /* ---------- bind ---------- */
 function bind(){
   var m=document.getElementById("main");
+
+  var sigBefore = visSig(S(current));
+  function reflowIfRevealed(){
+    /* a router answer may have revealed or hidden a conditional question */
+    if(visSig(S(current)) !== sigBefore){ render(true); }
+    else updateAdvanceState();
+  }
 
   m.querySelectorAll('input[type=radio]').forEach(function(el){
     el.addEventListener("change",function(){
@@ -3549,7 +3853,7 @@ function bind(){
       }
       clearErr(el.dataset.grid||el.name);
       markRadios(el.name);
-      updateAdvanceState();
+      reflowIfRevealed();
     });
   });
 
@@ -3570,7 +3874,7 @@ function bind(){
       answers[el.name]=arr;
       el.closest(".opt").classList.toggle("checked",el.checked);
       clearErr(el.name);
-      updateAdvanceState();
+      reflowIfRevealed();
       if(q.maxSelect){
         var note=el.closest(".q").querySelector(".maxnote");
         if(note) note.textContent=fmt(UI[lang].maxNote,q.maxSelect)+" ("+arr.length+"/"+q.maxSelect+")";
@@ -3580,10 +3884,31 @@ function bind(){
 
   m.querySelectorAll("select").forEach(function(el){
     el.addEventListener("change",function(){ answers[el.name]=el.value||null; clearErr(el.name);
-      updateAdvanceState(); });
+      reflowIfRevealed(); });
   });
   m.querySelectorAll("textarea").forEach(function(el){
     el.addEventListener("input",function(){ answers[el.name]=el.value; updateAdvanceState(); });
+  });
+  m.querySelectorAll('input[type=text]').forEach(function(el){
+    el.addEventListener("input",function(){
+      answers[el.name]=el.value;
+      clearErr(el.name.replace(/_other$/,""));
+      updateAdvanceState();
+    });
+  });
+  m.querySelectorAll('input[type=file]').forEach(function(el){
+    el.addEventListener("change",function(){
+      var f = el.files && el.files[0];
+      if(!f){ attachedFile=null; render(true); return; }
+      if(!acceptFile(f)){ el.value=""; attachedFile=null; render(true); return; }
+      attachedFile = f;
+      render(true);
+    });
+  });
+  var clr = m.querySelector('[id$="_clear"]');
+  if(clr) clr.addEventListener("click", function(e){
+    e.preventDefault(); e.stopPropagation();
+    attachedFile = null; render(true);
   });
 }
 
@@ -3611,9 +3936,11 @@ function clearErr(id){
    following section. */
 function sectionComplete(sec){
   sec = sec || S(current);
-  for(var i=0;i<sec.questions.length;i++){
-    var q=sec.questions[i];
+  var qs = visibleQs(sec);
+  for(var i=0;i<qs.length;i++){
+    var q=qs[i];
     if(!q.required) continue;
+    if(q.allowOther && otherChosen(q) && !String(answers[q.id+"_other"]||"").trim()) return false;
     var v=answers[q.id];
     if(q.type==="multi"){
       if(!Array.isArray(v) || !v.length) return false;
@@ -3685,9 +4012,12 @@ function goToStep(target){
 function validate(){
   var sec=S(current), u=UI[lang], ok=true;
   errors={};
-  sec.questions.forEach(function(q){
+  visibleQs(sec).forEach(function(q){
     if(!q.required) return;
     var v=answers[q.id];
+    if(q.allowOther && otherChosen(q) && !String(answers[q.id+"_other"]||"").trim()){
+      errors[q.id]=u.errOther; ok=false; return;
+    }
     if(q.type==="multi"){
       if(!Array.isArray(v)||!v.length){ errors[q.id]=u.errRequired; ok=false; }
       else if(q.maxSelect && v.length>q.maxSelect){ errors[q.id]=fmt(u.errMax,q.maxSelect); ok=false; }
@@ -3736,7 +4066,10 @@ function pathQuestionIds(){
   while(cur && cur!=="SUBMIT" && guard++<40){
     var sec=S(cur);
     if(!sec) break;
-    sec.questions.forEach(function(q){ ids[q.id]=1; });
+    visibleQs(sec).forEach(function(q){
+      ids[q.id]=1;
+      if(q.allowOther) ids[q.id+"_other"]=1;    /* keep the typed-in text */
+    });
     cur = sec.terminal ? "SUBMIT" : sec.next(answers);
   }
   return ids;
@@ -3747,8 +4080,8 @@ function prunedAnswers(){
   return out;
 }
 
-function buildPayload(){
-  return {
+function buildPayload(attachment){
+  var p = {
     survey:"uz-bpo-pulse-w1",
     responseId:"R-"+Math.random().toString(36).slice(2,10).toUpperCase(),
     submittedAtISO:new Date().toISOString(),
@@ -3757,6 +4090,8 @@ function buildPayload(){
     role:answers.P5||"",
     answers:prunedAnswers()
   };
+  if(attachment) p.attachment = attachment;
+  return p;
 }
 /* Guards against duplicate rows: without this, every click re-entered doSubmit()
    and minted a NEW responseId, so 3 clicks meant 3 different rows in the sheet. */
@@ -3779,27 +4114,44 @@ function doSubmit(){
   if(submitting || done) return;          // <- ignore repeat clicks
   lockSubmit();
 
-  var payload = buildPayload();           // built ONCE, so retries keep one responseId
+  if(!attachedFile){ sendPayload(buildPayload()); return; }
+
+  /* read the optional attachment, then send */
+  var fr = new FileReader();
+  fr.onload = function(){
+    var b64 = String(fr.result).split(",")[1] || "";
+    sendPayload(buildPayload({
+      name: attachedFile.name,
+      type: attachedFile.type || "application/octet-stream",
+      size: attachedFile.size,
+      dataB64: b64
+    }));
+  };
+  fr.onerror = function(){ sendPayload(buildPayload()); };   /* never lose the answers */
+  fr.readAsDataURL(attachedFile);
+}
+
+function sendPayload(payload){
   var body = JSON.stringify(payload);
 
   if(!CONFIG.submitEndpoint){
     downloadJSON(payload); finish("file", false); return;
   }
 
-  /* sendBeacon hands the request to the browser and returns immediately, so the
-     UI is not held hostage by an Apps Script cold start (1-3s). The browser
-     still delivers it, even if the page changes underneath. */
-  var queued = false;
-  try {
-    if(navigator.sendBeacon){
-      queued = navigator.sendBeacon(CONFIG.submitEndpoint,
-                 new Blob([body], {type:"text/plain;charset=UTF-8"}));
-    }
-  } catch(e){ queued = false; }
+  /* sendBeacon returns immediately, so the UI is not held hostage by an Apps
+     Script cold start (1-3s). But it caps the body at ~64 KB, so an attachment
+     must go the fetch route instead. */
+  if(!payload.attachment){
+    var queued = false;
+    try {
+      if(navigator.sendBeacon){
+        queued = navigator.sendBeacon(CONFIG.submitEndpoint,
+                   new Blob([body], {type:"text/plain;charset=UTF-8"}));
+      }
+    } catch(e){ queued = false; }
+    if(queued){ finish("sheet", false); return; }
+  }
 
-  if(queued){ finish("sheet", false); return; }
-
-  /* fallback for browsers without sendBeacon */
   fetch(CONFIG.submitEndpoint,{method:"POST",mode:"no-cors",
     headers:{"Content-Type":"text/plain;charset=utf-8"}, body:body})
   .then(function(){ finish("sheet",false); })
@@ -5292,6 +5644,57 @@ function toast(msg){
   clearTimeout(tTimer);
   tTimer=setTimeout(function(){ el.classList.remove("show"); },2600);
 }
+
+/* ---------- "guide & research" menu (first page only) ---------- */
+function paintGuideLabels(){
+  var u=UI[lang];
+  var l=document.getElementById("guideLabel");
+  var t1=document.getElementById("guideT1"), t2=document.getElementById("guideT2");
+  if(l)  l.textContent  = u.guideBtn;
+  if(t1) t1.textContent = u.guideT1;
+  if(t2) t2.textContent = u.guideT2;
+  var b=document.getElementById("guideBtn");
+  if(b) b.setAttribute("title", u.guideBtn);   /* icon-only on small screens */
+}
+/* Set once the respondent has actually opened the guides — this retires both the
+   nudge and the pill's glow, so it never nags someone who already looked. */
+var guideSeen = false;
+function markGuideSeen(){
+  guideSeen = true;
+  document.body.classList.add("guide-seen");
+}
+function openGuide(){
+  var m=document.getElementById("guideMenu"), b=document.getElementById("guideBtn");
+  if(!m||!b) return;
+  m.hidden=false;
+  b.setAttribute("aria-expanded","true");
+  markGuideSeen();
+}
+function closeGuide(){
+  var m=document.getElementById("guideMenu"), b=document.getElementById("guideBtn");
+  if(!m||!b) return;
+  m.hidden=true;
+  b.setAttribute("aria-expanded","false");
+}
+(function wireGuide(){
+  var b=document.getElementById("guideBtn"), m=document.getElementById("guideMenu");
+  if(!b||!m) return;
+  b.addEventListener("click", function(e){
+    e.stopPropagation();
+    var open = m.hidden;
+    m.hidden = !open;
+    b.setAttribute("aria-expanded", open ? "true" : "false");
+    if(open) markGuideSeen();
+  });
+  /* clicking a document closes the menu; so does clicking away or pressing Esc */
+  m.addEventListener("click", function(){ setTimeout(closeGuide, 120); });
+  document.addEventListener("click", function(e){
+    if(!m.hidden && !m.contains(e.target) && e.target!==b) closeGuide();
+  });
+  document.addEventListener("keydown", function(e){
+    if(e.key==="Escape") closeGuide();
+  });
+})();
 
 /* ---------- language ---------- */
 document.querySelectorAll(".langsw button").forEach(function(b){
