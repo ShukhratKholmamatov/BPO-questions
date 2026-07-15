@@ -62,6 +62,7 @@ function doPost(e) {
 
     /* Optional attachment (K3). Saved to Drive; the row keeps only a link, so the
        sheet stays light. A bad file must never cost us the answers, hence try/catch. */
+    var attachResult = null;
     if (data.attachment && data.attachment.dataB64) {
       try {
         var blob = Utilities.newBlob(
@@ -71,9 +72,11 @@ function doPost(e) {
         var file = attachmentFolder().createFile(blob);
         row.attachment_name = data.attachment.name || '';
         row.attachment_url  = file.getUrl();
+        attachResult = 'saved';
       } catch (aErr) {
         row.attachment_name = (data.attachment.name || '') + ' (FAILED)';
         row.attachment_url  = 'ERROR: ' + aErr;
+        attachResult = 'ERROR: ' + aErr;
       }
     }
 
@@ -96,7 +99,7 @@ function doPost(e) {
     }));
 
     try { refreshDashboard(); } catch (dErr) { /* never block saving */ }
-    return jsonOut({ ok: true });
+    return jsonOut({ ok: true, attachment: attachResult });
   } catch (err) {
     return jsonOut({ ok: false, error: String(err) });
   } finally {
@@ -110,7 +113,20 @@ function attachmentFolder() {
   return it.hasNext() ? it.next() : DriveApp.createFolder(FILES_FOLDER);
 }
 
-function doGet() {
+function doGet(e) {
+  /* /exec?selftest=1  -> creates a throwaway Drive file and reports the result,
+     so a Drive-permission problem can be diagnosed without opening the sheet. */
+  if (e && e.parameter && e.parameter.selftest) {
+    try {
+      var f = attachmentFolder().createFile(
+        Utilities.newBlob('selftest ' + new Date(), 'text/plain', 'selftest.txt'));
+      var url = f.getUrl();
+      f.setTrashed(true);   // clean up immediately
+      return jsonOut({ ok: true, drive: 'OK', folder: FILES_FOLDER, url: url });
+    } catch (err) {
+      return jsonOut({ ok: false, drive: 'FAILED', error: String(err) });
+    }
+  }
   return jsonOut({ ok: true, message: 'BPO Pulse survey collector is live. POST responses here.' });
 }
 
