@@ -410,6 +410,58 @@
     body.hero-mode.consented:not(.guide-seen) .guidepill::after{opacity:0}
   }
 
+  /* ================= full-screen sending overlay ================= */
+  .sending{position:fixed;inset:0;z-index:120;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    background:radial-gradient(120% 120% at 50% 40%, var(--card) 0%, var(--bg) 70%);
+    opacity:0;visibility:hidden;transition:opacity .35s ease,visibility 0s linear .35s}
+  .sending.on{opacity:1;visibility:visible;transition:opacity .35s ease}
+  .send-inner{display:flex;flex-direction:column;align-items:center;gap:30px;
+    transform:translateY(14px);transition:transform .5s cubic-bezier(.2,.7,.3,1)}
+  .sending.on .send-inner{transform:none}
+
+  .send-scene{position:relative;width:min(360px,78vw);height:74px;overflow:hidden}
+  /* moving dashed road = sense of motion */
+  .send-road{position:absolute;left:-20px;right:-20px;bottom:12px;height:2px;
+    background:repeating-linear-gradient(90deg,var(--line) 0 12px,transparent 12px 26px);
+    background-size:26px 2px;animation:send-road .45s linear infinite}
+  @keyframes send-road{to{background-position:-26px 0}}
+  .send-truck{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);
+    width:78px;animation:send-bob .5s ease-in-out infinite}
+  @keyframes send-bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,-3px)}}
+  .send-truck svg{width:78px;height:auto;display:block}
+  .tk-body,.tk-cab{fill:var(--accent)}
+  .tk-win{fill:var(--card);opacity:.9}
+  .tk-wheel{fill:var(--ink)}
+  .tk-hub{fill:var(--card)}
+  /* exhaust puffs drifting back */
+  .send-puff{position:absolute;left:2px;bottom:20px;width:7px;height:7px;border-radius:50%;
+    background:var(--muted);opacity:0;animation:send-puff 1s linear infinite}
+  .send-puff.p2{animation-delay:.33s}
+  .send-puff.p3{animation-delay:.66s}
+  @keyframes send-puff{0%{opacity:.5;transform:translate(0,0) scale(.6)}
+    100%{opacity:0;transform:translate(-26px,-10px) scale(1.5)}}
+
+  /* indeterminate progress bar with a travelling glow */
+  .send-bar{position:relative;width:min(300px,70vw);height:5px;border-radius:3px;
+    background:var(--line);overflow:hidden}
+  .send-bar>i{position:absolute;top:0;left:0;height:100%;width:42%;border-radius:3px;
+    background:linear-gradient(90deg,transparent,var(--accent),transparent);
+    animation:send-bar 1.15s cubic-bezier(.5,0,.5,1) infinite}
+  @keyframes send-bar{0%{left:-42%}100%{left:100%}}
+
+  .send-text{font-family:var(--font-mono);font-size:14px;letter-spacing:.05em;color:var(--ink);
+    display:flex;align-items:baseline}
+  .send-dots i{font-style:normal;animation:send-dot 1.2s infinite}
+  .send-dots i:nth-child(2){animation-delay:.2s}
+  .send-dots i:nth-child(3){animation-delay:.4s}
+  @keyframes send-dot{0%,100%{opacity:.2}50%{opacity:1}}
+
+  @media (prefers-reduced-motion:reduce){
+    .send-road,.send-truck,.send-puff,.send-bar>i,.send-dots i{animation:none}
+    .send-bar>i{left:0;width:100%}
+  }
+
   /* ---- screen 1: hero fills the viewport, with a quiet scroll cue ---- */
   .hero-screen{min-height:calc(100vh - 132px);display:flex;flex-direction:column;
     justify-content:center;align-items:flex-start}
@@ -633,6 +685,29 @@
 <main id="main"></main>
 
 <div class="toast" id="toast"></div>
+
+<!-- full-screen sending animation -->
+<div class="sending" id="sendOverlay" aria-hidden="true">
+  <div class="send-inner">
+    <div class="send-scene">
+      <div class="send-road"></div>
+      <div class="send-truck">
+        <svg viewBox="0 0 64 40" aria-hidden="true">
+          <rect class="tk-body" x="2" y="9" width="34" height="20" rx="3"/>
+          <path class="tk-cab" d="M36 14h11l7 8v7H36z"/>
+          <rect class="tk-win" x="39" y="16.5" width="8.5" height="6" rx="1.5"/>
+          <circle class="tk-wheel" cx="15" cy="31" r="5"/>
+          <circle class="tk-wheel" cx="45" cy="31" r="5"/>
+          <circle class="tk-hub" cx="15" cy="31" r="1.8"/>
+          <circle class="tk-hub" cx="45" cy="31" r="1.8"/>
+        </svg>
+        <span class="send-puff p1"></span><span class="send-puff p2"></span><span class="send-puff p3"></span>
+      </div>
+    </div>
+    <div class="send-bar"><i></i></div>
+    <div class="send-text"><span id="sendText"></span><b class="send-dots"><i>.</i><i>.</i><i>.</i></b></div>
+  </div>
+</div>
 
 <script>
 /* ============================================================================
@@ -2917,6 +2992,7 @@ var UI = {
     thanksContact:"Вы отметили готовность к интервью. Контакт сохраняется отдельно от ответов, поэтому опрос остаётся полностью анонимным.",
     contactLink:"Оставить контакт",
     scrollCue:"Пролистайте вниз",
+    sendingFull:"Отправляем ваш ответ",
     otherPh:"Укажите свой вариант",
     errOther:"Пожалуйста, уточните свой вариант.",
     fileLimit:"PDF, DOC, DOCX или TXT · до %s МБ · необязательно",
@@ -2955,6 +3031,7 @@ var UI = {
     thanksContact:"Siz intervyuga tayyorligingizni bildirdingiz. Kontakt javoblardan alohida saqlanadi, shuning uchun so‘rovnoma to‘liq anonim qoladi.",
     contactLink:"Kontakt qoldirish",
     scrollCue:"Pastga suring",
+    sendingFull:"Javobingiz yuborilmoqda",
     otherPh:"O‘z variantingizni yozing",
     errOther:"Iltimos, o‘z variantingizni aniqlashtiring.",
     fileLimit:"PDF, DOC, DOCX yoki TXT · %s MB gacha · ixtiyoriy",
@@ -2993,6 +3070,7 @@ var UI = {
     thanksContact:"You said you are willing to be interviewed. Your contact is stored separately from your answers, so the survey stays fully anonymous.",
     contactLink:"Leave a contact",
     scrollCue:"Scroll down",
+    sendingFull:"Sending your response",
     otherPh:"Please specify",
     errOther:"Please specify your answer.",
     fileLimit:"PDF, DOC, DOCX or TXT · up to %s MB · optional",
@@ -4108,6 +4186,26 @@ function lockSubmit(){
     b.classList.add("busy");
     b.innerHTML = '<span class="spin"></span>' + esc(UI[lang].sending);
   });
+  showSending();
+}
+
+/* full-screen sending animation, with a minimum on-screen time so an instant
+   sendBeacon submit does not just flash it for a frame */
+var sendShownAt = 0;
+function showSending(){
+  var o=document.getElementById("sendOverlay");
+  var t=document.getElementById("sendText");
+  if(t) t.textContent = UI[lang].sendingFull;
+  if(o){ o.classList.add("on"); o.setAttribute("aria-hidden","false"); }
+  sendShownAt = Date.now();
+}
+function hideSending(cb){
+  var o=document.getElementById("sendOverlay");
+  var wait=Math.max(0, 900-(Date.now()-sendShownAt));
+  setTimeout(function(){
+    if(o){ o.classList.remove("on"); o.setAttribute("aria-hidden","true"); }
+    if(cb) cb();
+  }, wait);
 }
 
 function doSubmit(){
@@ -4158,9 +4256,11 @@ function sendPayload(payload){
   .catch(function(){ downloadJSON(payload); finish("file",true); });
 }
 function finish(via,fell){
-  done=true; submitting=false; deliveredVia=via;
-  toast(fell?UI[lang].sendFail:(via==="sheet"?UI[lang].sent:UI[lang].saved));
-  render();
+  hideSending(function(){
+    done=true; submitting=false; deliveredVia=via;
+    toast(fell?UI[lang].sendFail:(via==="sheet"?UI[lang].sent:UI[lang].saved));
+    render();
+  });
 }
 /* Sent as a separate record (type:"contact") with NO responseId, so it cannot be
    joined back to the answers. Apps Script drops it into a "Contacts" tab. */
@@ -4211,7 +4311,7 @@ function downloadJSON(p){
 }
 function renderThanks(){
   var u=UI[lang];
-  var msg = deliveredVia==="sheet" ? u.thanksPSend : u.thanksP;
+  var msg = u.thanksP;   /* thanksPSend was consolidated into thanksP; this line printed "undefined" */
   var h='<section class="card thanks"><div class="big">✅</div><h2>'+u.thanksH+'</h2><p>'+msg+'</p>';
 
   /* K2 = "yes" -> capture a contact HERE, but send it to a separate sheet with no
