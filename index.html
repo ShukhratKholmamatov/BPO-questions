@@ -3,6 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Hardening: block <object>/<embed> injection and <base>-tag / form-action
+     hijacking. Deliberately does NOT set script/style/connect — the app is a
+     single self-contained inline file and must still POST to Apps Script. -->
+<meta http-equiv="Content-Security-Policy"
+      content="object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>Пульс рынка: BPO-логистика Узбекистан — США</title>
 <style>
   :root{
@@ -40,7 +45,7 @@
     .navpill{background:rgba(22,29,43,.62);
       box-shadow:0 10px 34px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.08)}
   }
-  .navbrand{font-family:var(--font-display);font-size:18px;font-weight:600;letter-spacing:-.01em;
+  .navbrand{font-family:var(--font-display);font-size:22px;font-weight:600;letter-spacing:-.01em;
     white-space:nowrap}
   .langsw{display:flex;gap:3px;background:rgba(120,140,160,.14);border:0;border-radius:999px;padding:4px}
   .langsw button{border:0;background:transparent;color:var(--muted);padding:6px 12px;
@@ -85,7 +90,7 @@
   .hero-kicker{font-family:var(--font-mono);font-size:12.5px;font-weight:700;letter-spacing:.16em;
     text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:9px}
   .hero-kicker::before{content:"";width:22px;height:1px;background:var(--accent);opacity:.6}
-  .hero h1{font-family:var(--font-display);font-size:clamp(34px,3.9vw,56px);line-height:1.07;
+  .hero h1{font-family:var(--font-display);font-size:clamp(38px,4.4vw,64px);line-height:1.07;
     font-weight:600;letter-spacing:-.02em;margin:12px 0 0;text-wrap:balance}
   .hero h1 em{font-style:italic;color:var(--accent)}
   .hero .lead{font-size:21px;line-height:1.5;color:var(--ink);opacity:.92;margin:18px 0 0;max-width:46ch}
@@ -235,7 +240,7 @@
     body.hero-mode main{padding-top:88px;padding-bottom:24px}
     .card{padding:22px 18px;border-radius:16px}
     .navpill{gap:14px;padding:7px 8px 7px 16px}
-    .navbrand{font-size:16px}
+    .navbrand{font-size:19px}
     .langsw button{padding:6px 10px;font-size:12.5px}
     h1.sect{font-size:23px}
     .qlabel{font-size:17px}
@@ -660,15 +665,17 @@
       <svg class="gi-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
     </button>
     <div class="guidemenu" id="guideMenu" hidden>
-      <a class="guideitem" href="guides/freight-fraud-handbook.pdf"
+      <!-- handbook: href/download/size swap with the language (see paintGuideLabels) -->
+      <a class="guideitem" id="guideA1" href="guides/freight-fraud-handbook.pdf"
          download="Freight Fraud Handbook.pdf" target="_blank" rel="noopener">
         <span class="gi-badge">PDF</span>
-        <span class="gi-txt"><b id="guideT1"></b><i>1.0 MB</i></span>
+        <span class="gi-txt"><b id="guideT1"></b><i id="guideS1">1.0 MB</i></span>
       </a>
-      <a class="guideitem" href="guides/bpo-logistics-risk-analysis.pdf"
+      <!-- research: href/download/size swap with the language (see paintGuideLabels) -->
+      <a class="guideitem" id="guideA2" href="guides/bpo-logistics-risk-analysis.pdf"
          download="Анализ рисков сектора BPO-логистики США.pdf" target="_blank" rel="noopener">
         <span class="gi-badge">PDF</span>
-        <span class="gi-txt"><b id="guideT2"></b><i>0.7 MB</i></span>
+        <span class="gi-txt"><b id="guideT2"></b><i id="guideS2">0.7 MB</i></span>
       </a>
     </div>
   </div>
@@ -5746,6 +5753,18 @@ function toast(msg){
 }
 
 /* ---------- "guide & research" menu (first page only) ---------- */
+/* the fraud handbook exists in three languages — the download follows the toggle */
+var HANDBOOK = {
+  ru:{ file:"guides/freight-fraud-handbook-RUS.pdf",   dl:"Справочник по мошенничеству в грузоперевозках.pdf", size:"1.1 МБ" },
+  uz:{ file:"guides/freight-fraud-handbook-UZbek.pdf", dl:"Yuk tashishdagi firibgarlik qo‘llanmasi.pdf",       size:"1.0 MB" },
+  en:{ file:"guides/freight-fraud-handbook.pdf",       dl:"Freight Fraud Handbook.pdf",                        size:"1.0 MB" }
+};
+/* the risk-analysis exists in RU + UZ + EN — download follows the language toggle */
+var RESEARCH = {
+  ru:{ file:"guides/bpo-logistics-risk-analysis.pdf",       dl:"Анализ рисков сектора BPO-логистики США.pdf",   size:"0.7 МБ" },
+  uz:{ file:"guides/bpo-logistics-risk-analysis-UZbek.pdf", dl:"BPO sohasidagi ehtimoliy xavflar tahlili.pdf",   size:"0.8 MB" },
+  en:{ file:"guides/bpo-logistics-risk-analysis-EN.pdf",    dl:"Risk Analysis of the US BPO Logistics Sector.pdf", size:"1.4 MB" }
+};
 function paintGuideLabels(){
   var u=UI[lang];
   var l=document.getElementById("guideLabel");
@@ -5755,6 +5774,17 @@ function paintGuideLabels(){
   if(t2) t2.textContent = u.guideT2;
   var b=document.getElementById("guideBtn");
   if(b) b.setAttribute("title", u.guideBtn);   /* icon-only on small screens */
+
+  /* point the handbook + research links at the current language's PDF */
+  var a1=document.getElementById("guideA1"), s1=document.getElementById("guideS1");
+  var hb=HANDBOOK[lang] || HANDBOOK.en;
+  if(a1){ a1.setAttribute("href", hb.file); a1.setAttribute("download", hb.dl); }
+  if(s1){ s1.textContent = hb.size; }
+
+  var a2=document.getElementById("guideA2"), s2=document.getElementById("guideS2");
+  var rs=RESEARCH[lang] || RESEARCH.en;
+  if(a2){ a2.setAttribute("href", rs.file); a2.setAttribute("download", rs.dl); }
+  if(s2){ s2.textContent = rs.size; }
 }
 /* Set once the respondent has actually opened the guides — this retires both the
    nudge and the pill's glow, so it never nags someone who already looked. */

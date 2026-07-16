@@ -9,6 +9,8 @@
  * • Contacts    — interview volunteers post a separate {type:"contact"} record.
  *                 It carries NO responseId, so it lands in its own "Contacts"
  *                 tab and can never be joined back to a set of answers.
+ * • Security    — free-text answers are neutralised against CSV/formula injection
+ *                 before hitting a cell; attachments are type/size-checked server-side.
  * • Dashboard   — rebuilt after every submission, following the analysis
  *                 matrix of the specification (§5): profile, fraud exposure,
  *                 legislation awareness, cyber maturity, diversification
@@ -27,6 +29,21 @@ var SHEET_NAME = 'Responses';
 var DASH_NAME  = 'Dashboard';
 var CONTACT_NAME = 'Contacts';
 var FILES_FOLDER = 'BPO Survey — attachments';   // optional files from the final question
+var MAX_ATTACH_BYTES = 6 * 1024 * 1024;          // ~5 MB file + base64 slack
+var ALLOWED_EXT = ['pdf', 'doc', 'docx', 'txt']; // server-side allowlist (client checks are bypassable)
+
+/* CSV / formula-injection guard. Free-text answers are written into cells; a value
+   beginning with = + - @ (or a control char) would run as a FORMULA the moment the
+   owner opens the sheet — e.g. =IMPORTXML/=HYPERLINK exfiltration. Prefixing a
+   single quote makes Sheets treat it as literal text (the quote is not displayed).
+   Applied to every user-derived string that reaches any cell. */
+function safeCell(v) {
+  if (typeof v !== 'string' || !v.length) return v;
+  var c = v.charCodeAt(0);
+  // leading = + - @ or TAB/CR/LF -> prefix a quote so Sheets keeps it as text
+  if (c === 61 || c === 43 || c === 45 || c === 64 || c === 9 || c === 10 || c === 13) return "'" + v;
+  return v;
+}
 
 /* ============================ WEB APP ============================ */
 
@@ -46,7 +63,9 @@ function doPost(e) {
         cs.getRange(1, 1, 1, 4).setValues([['received_at', 'nick', 'contact', 'language']]);
         cs.setFrozenRows(1);
       }
-      cs.appendRow([new Date(), data.nick || '', data.contact || '', data.language || '']);
+      cs.appendRow([new Date(),
+        safeCell(String(data.nick || '')), safeCell(String(data.contact || '')),
+        safeCell(String(data.language || ''))]);
       return jsonOut({ ok: true, kind: 'contact' });
     }
 
@@ -65,16 +84,20 @@ function doPost(e) {
     var attachResult = null;
     if (data.attachment && data.attachment.dataB64) {
       try {
-        var blob = Utilities.newBlob(
-          Utilities.base64Decode(data.attachment.dataB64),
-          data.attachment.type || 'application/octet-stream',
-          data.attachment.name || 'attachment');
+        var aName = String(data.attachment.name || 'attachment');
+        var ext = aName.indexOf('.') >= 0 ? aName.split('.').pop().toLowerCase() : '';
+        if (ALLOWED_EXT.indexOf(ext) === -1) throw new Error('file type not allowed: .' + ext);
+        // reject before decoding a huge string (base64 is ~1.37x the raw size)
+        if (String(data.attachment.dataB64).length > MAX_ATTACH_BYTES * 1.4) throw new Error('file too large');
+        var bytes = Utilities.base64Decode(data.attachment.dataB64);
+        if (bytes.length > MAX_ATTACH_BYTES) throw new Error('file too large');
+        var blob = Utilities.newBlob(bytes, data.attachment.type || 'application/octet-stream', aName);
         var file = attachmentFolder().createFile(blob);
-        row.attachment_name = data.attachment.name || '';
+        row.attachment_name = aName;
         row.attachment_url  = file.getUrl();
         attachResult = 'saved';
       } catch (aErr) {
-        row.attachment_name = (data.attachment.name || '') + ' (FAILED)';
+        row.attachment_name = String(data.attachment.name || '') + ' (REJECTED)';
         row.attachment_url  = 'ERROR: ' + aErr;
         attachResult = 'ERROR: ' + aErr;
       }
@@ -95,7 +118,7 @@ function doPost(e) {
       sheet.setFrozenRows(1);
     }
     sheet.appendRow(headers.map(function (h) {
-      return row.hasOwnProperty(h) ? row[h] : '';
+      return safeCell(row.hasOwnProperty(h) ? row[h] : '');
     }));
 
     try { refreshDashboard(); } catch (dErr) { /* never block saving */ }
@@ -501,7 +524,7 @@ function computeDashboardGrid(values, nowStr, contactCount) {
     var txt = get(r, 'K1');
     if (txt && String(txt).trim()) {
       anyOpen = true;
-      R(get(r, 'responseId'), lbl('role', get(r, 'role')), String(txt).slice(0, 500));
+      R(get(r, 'responseId'), lbl('role', get(r, 'role')), safeCell(String(txt).slice(0, 500)));
     }
   });
   if (!anyOpen) R('(no open answers yet)', '', '');
