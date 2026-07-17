@@ -298,7 +298,7 @@
   .contact-done{padding:16px;border-radius:12px;background:var(--accent-soft);
     color:var(--accent);font-weight:700;text-align:center}
 
-  /* ---- "download guide & research" pill, sitting beside the navbar ---- */
+  /* ---- "download guide" pill, sitting beside the navbar ---- */
   .guidewrap{position:relative;pointer-events:auto;
     animation:rise .5s cubic-bezier(.2,.7,.3,1) .08s both}
   .guidepill{display:flex;align-items:center;gap:9px;cursor:pointer;border:0;
@@ -670,12 +670,6 @@
          download="Freight Fraud Handbook.pdf" target="_blank" rel="noopener">
         <span class="gi-badge">PDF</span>
         <span class="gi-txt"><b id="guideT1"></b><i id="guideS1">1.0 MB</i></span>
-      </a>
-      <!-- research: href/download/size swap with the language (see paintGuideLabels) -->
-      <a class="guideitem" id="guideA2" href="guides/bpo-logistics-risk-analysis.pdf"
-         download="Анализ рисков сектора BPO-логистики США.pdf" target="_blank" rel="noopener">
-        <span class="gi-badge">PDF</span>
-        <span class="gi-txt"><b id="guideT2"></b><i id="guideS2">0.7 MB</i></span>
       </a>
     </div>
   </div>
@@ -3005,10 +2999,9 @@ var UI = {
     fileLimit:"PDF, DOC, DOCX или TXT · до %s МБ · необязательно",
     fileType:"Допустимы только файлы PDF, DOC, DOCX или TXT.",
     fileTooBig:"Файл слишком большой. Максимум %s МБ.",
-    guideBtn:"Гайд и исследование",
-    nudge:"Сначала откройте «Гайд и исследование» наверху — так вы ответите точнее",
+    guideBtn:"Гайд",
+    nudge:"Сначала откройте «Гайд» наверху — так вы ответите точнее",
     guideT1:"Справочник по мошенничеству в грузоперевозках",
-    guideT2:"Анализ рисков сектора BPO-логистики США",
     sending:"Отправка…",
     contactNick:"Имя или ник",
     contactHandle:"Telegram или e-mail",
@@ -3044,10 +3037,9 @@ var UI = {
     fileLimit:"PDF, DOC, DOCX yoki TXT · %s MB gacha · ixtiyoriy",
     fileType:"Faqat PDF, DOC, DOCX yoki TXT fayllar qabul qilinadi.",
     fileTooBig:"Fayl juda katta. Maksimal %s MB.",
-    guideBtn:"Qo‘llanma va tadqiqot",
-    nudge:"Avval yuqoridagi «Qo‘llanma va tadqiqot»ni oching — shunda aniqroq javob berasiz",
+    guideBtn:"Qo‘llanma",
+    nudge:"Avval yuqoridagi «Qo‘llanma»ni oching — shunda aniqroq javob berasiz",
     guideT1:"Yuk tashishdagi firibgarlik bo‘yicha qo‘llanma",
-    guideT2:"AQSh BPO-logistika sohasi risklari tahlili",
     sending:"Yuborilmoqda…",
     contactNick:"Ism yoki nik",
     contactHandle:"Telegram yoki e-mail",
@@ -3083,10 +3075,9 @@ var UI = {
     fileLimit:"PDF, DOC, DOCX or TXT · up to %s MB · optional",
     fileType:"Only PDF, DOC, DOCX or TXT files are accepted.",
     fileTooBig:"That file is too large. Maximum %s MB.",
-    guideBtn:"Guide & research",
-    nudge:"Open “Guide & research” at the top first — it will help you answer more precisely",
+    guideBtn:"Guide",
+    nudge:"Open “Guide” at the top first — it will help you answer more precisely",
     guideT1:"Freight fraud handbook",
-    guideT2:"US BPO-logistics risk analysis",
     sending:"Sending…",
     contactNick:"Name or nickname",
     contactHandle:"Telegram or e-mail",
@@ -5752,39 +5743,29 @@ function toast(msg){
   tTimer=setTimeout(function(){ el.classList.remove("show"); },2600);
 }
 
-/* ---------- "guide & research" menu (first page only) ---------- */
+/* ---------- "guide" menu (first page only) ---------- */
 /* the fraud handbook exists in three languages — the download follows the toggle */
 var HANDBOOK = {
-  ru:{ file:"guides/freight-fraud-handbook-RUS.pdf",   dl:"Справочник по мошенничеству в грузоперевозках.pdf", size:"1.1 МБ" },
-  uz:{ file:"guides/freight-fraud-handbook-UZbek.pdf", dl:"Yuk tashishdagi firibgarlik qo‘llanmasi.pdf",       size:"1.0 MB" },
-  en:{ file:"guides/freight-fraud-handbook.pdf",       dl:"Freight Fraud Handbook.pdf",                        size:"1.0 MB" }
-};
-/* the risk-analysis exists in RU + UZ + EN — download follows the language toggle */
-var RESEARCH = {
-  ru:{ file:"guides/bpo-logistics-risk-analysis.pdf",       dl:"Анализ рисков сектора BPO-логистики США.pdf",   size:"0.7 МБ" },
-  uz:{ file:"guides/bpo-logistics-risk-analysis-UZbek.pdf", dl:"BPO sohasidagi ehtimoliy xavflar tahlili.pdf",   size:"0.8 MB" },
-  en:{ file:"guides/bpo-logistics-risk-analysis-EN.pdf",    dl:"Risk Analysis of the US BPO Logistics Sector.pdf", size:"1.4 MB" }
+  ru:{ file:"guides/ru_Руководство.pdf", dl:"Справочник по мошенничеству в грузоперевозках.pdf", size:"1.0 МБ" },
+  uz:{ file:"guides/uz_Qo‘llanma.pdf",   dl:"Yuk tashishdagi firibgarlik qo‘llanmasi.pdf",       size:"0.9 MB" },
+  en:{ file:"guides/freight-fraud-handbook.pdf", dl:"Freight Fraud Handbook.pdf",                 size:"1.0 MB" }
 };
 function paintGuideLabels(){
   var u=UI[lang];
   var l=document.getElementById("guideLabel");
-  var t1=document.getElementById("guideT1"), t2=document.getElementById("guideT2");
+  var t1=document.getElementById("guideT1");
   if(l)  l.textContent  = u.guideBtn;
   if(t1) t1.textContent = u.guideT1;
-  if(t2) t2.textContent = u.guideT2;
   var b=document.getElementById("guideBtn");
   if(b) b.setAttribute("title", u.guideBtn);   /* icon-only on small screens */
 
-  /* point the handbook + research links at the current language's PDF */
+  /* point the handbook + research links at the current language's PDF.
+     encodeURI keeps ASCII names intact and percent-encodes non-ASCII ones. */
+  var enc=function(p){ return p.split("/").map(encodeURIComponent).join("/"); };
   var a1=document.getElementById("guideA1"), s1=document.getElementById("guideS1");
   var hb=HANDBOOK[lang] || HANDBOOK.en;
-  if(a1){ a1.setAttribute("href", hb.file); a1.setAttribute("download", hb.dl); }
+  if(a1){ a1.setAttribute("href", enc(hb.file)); a1.setAttribute("download", hb.dl); }
   if(s1){ s1.textContent = hb.size; }
-
-  var a2=document.getElementById("guideA2"), s2=document.getElementById("guideS2");
-  var rs=RESEARCH[lang] || RESEARCH.en;
-  if(a2){ a2.setAttribute("href", rs.file); a2.setAttribute("download", rs.dl); }
-  if(s2){ s2.textContent = rs.size; }
 }
 /* Set once the respondent has actually opened the guides — this retires both the
    nudge and the pill's glow, so it never nags someone who already looked. */
