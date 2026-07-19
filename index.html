@@ -90,8 +90,11 @@
   .hero-kicker{font-family:var(--font-mono);font-size:12.5px;font-weight:700;letter-spacing:.16em;
     text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:9px}
   .hero-kicker::before{content:"";width:22px;height:1px;background:var(--accent);opacity:.6}
-  .hero h1{font-family:var(--font-display);font-size:clamp(38px,4.4vw,64px);line-height:1.07;
-    font-weight:600;letter-spacing:-.02em;margin:12px 0 0;text-wrap:balance}
+  /* the vw term carries narrow screens: a fixed 38px floor clipped the longer
+     Uzbek title on phones. overflow-wrap is the belt-and-braces for long words. */
+  .hero h1{font-family:var(--font-display);font-size:clamp(30px,7.2vw,64px);line-height:1.07;
+    font-weight:600;letter-spacing:-.02em;margin:12px 0 0;text-wrap:balance;
+    overflow-wrap:break-word;hyphens:auto}
   .hero h1 em{font-style:italic;color:var(--accent)}
   .hero .lead{font-size:21px;line-height:1.5;color:var(--ink);opacity:.92;margin:18px 0 0;max-width:46ch}
   .hero .body{font-size:16px;line-height:1.62;color:var(--muted);margin:16px 0 0;max-width:64ch}
@@ -476,14 +479,14 @@
     background:none;border:0;padding:0;margin-top:30px;cursor:pointer;
     transition:opacity .5s ease,transform .3s cubic-bezier(.2,.7,.3,1)}
   .scrollcue:hover{transform:translateY(3px)}
-  .scrollcue span{font-family:var(--font-mono);font-size:12.5px;letter-spacing:.2em;
-    text-transform:uppercase;color:var(--accent);opacity:.9;transition:opacity .25s}
+  .scrollcue span{font-family:var(--font-mono);font-size:13.5px;font-weight:600;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--accent);opacity:.95;transition:opacity .25s}
   .scrollcue:hover span{opacity:1}
-  .scrollcue i{position:relative;display:block;width:1.5px;height:var(--cueH);border-radius:2px;
+  .scrollcue i{position:relative;display:block;width:3px;height:var(--cueH);border-radius:3px;
     background:linear-gradient(var(--line),transparent);overflow:hidden}
-  .scrollcue i::after{content:"";position:absolute;left:0;top:0;width:1.5px;height:20px;
-    border-radius:2px;background:var(--accent);
-    box-shadow:0 0 10px 1px rgba(15,111,140,.55);
+  .scrollcue i::after{content:"";position:absolute;left:0;top:0;width:3px;height:24px;
+    border-radius:3px;background:var(--accent);
+    box-shadow:0 0 14px 2px rgba(15,111,140,.7);
     animation:cue 1.9s cubic-bezier(.65,0,.35,1) infinite}
   @keyframes cue{0%{transform:translateY(-24px)}60%,100%{transform:translateY(var(--cueH))}}
 
@@ -491,24 +494,27 @@
      of the page, running vertically. The lane is padded out of `main` so it can
      never collide with the text. Narrow screens keep it inline under the hero. */
   @media (min-width:1000px){
-    body.hero-mode main{padding-left:104px;padding-right:104px}
+    body.hero-mode main{padding-left:118px;padding-right:104px}
     .scrollcue{--cueH:132px;
-      position:fixed;left:30px;top:50%;transform:translateY(-50%);
+      position:fixed;left:56px;top:50%;transform:translateY(-50%);
       align-items:center;gap:16px;margin-top:0;z-index:25}
+    .scrollcue .chev{margin:0 0 0 0}
     .scrollcue:hover{transform:translateY(-50%) translateX(3px)}
     .scrollcue span{writing-mode:vertical-rl}
   }
   /* a small chevron that bobs — the one overt "go down" signal */
-  .scrollcue .chev{display:block;width:9px;height:9px;margin:-3px 0 0 -4px;
-    border-right:1.7px solid var(--accent);border-bottom:1.7px solid var(--accent);
-    animation:chev 1.8s ease-in-out infinite}
+  .scrollcue .chev{display:block;width:18px;height:18px;margin:-2px 0 0 -9px;
+    border-right:4px solid var(--accent);border-bottom:4px solid var(--accent);
+    border-radius:0 0 4px 0;
+    filter:drop-shadow(0 0 8px rgba(15,111,140,.65));
+    animation:chev 1.5s ease-in-out infinite}
   @keyframes chev{
-    0%,100%{transform:rotate(45deg) translate(-2px,-2px);opacity:.45}
-    50%    {transform:rotate(45deg) translate(2px,2px);  opacity:1}
+    0%,100%{transform:rotate(45deg) translate(-4px,-4px);opacity:.55}
+    50%    {transform:rotate(45deg) translate(4px,4px);  opacity:1}
   }
   body.consent-seen .scrollcue{opacity:0;pointer-events:none}
   @media (prefers-reduced-motion:reduce){
-    .scrollcue .chev{animation:none;transform:rotate(45deg);opacity:.9}
+    .scrollcue .chev{animation:none;transform:rotate(45deg);opacity:1}
   }
 
   /* ---- screen 2: sketch as full background, question in the shadowed right half ---- */
@@ -2298,7 +2304,7 @@ var SECTIONS = [
   kicker:L("Market research · Wave 1","Исследование рынка · Волна 1","Bozor tadqiqoti · 1-to‘lqin"),
   heroTitle:L("Market Pulse: <em>BPO logistics</em><br>Uzbekistan — USA",
               "Пульс рынка: <em>BPO-логистика</em><br>Узбекистан — США",
-              "AQSh logistikasi <em>tadqiqoti</em><br>Hissangizni qo‘shing!"),
+              "AQSh logistikasi <em>tadqiqoti</em><br>Hissangizni qo‘shing!<br>Fikringizni bildiring"),
   lead:L("Help us see the industry as it really is — so new rules follow facts, not rumours.",
          "Помогите увидеть отрасль такой, какая она есть, — чтобы правила писались по фактам, а не по слухам.",
          "Sohani borligicha ko‘rishga yordam bering — qoidalar mish-mishga emas, faktga asoslansin."),
