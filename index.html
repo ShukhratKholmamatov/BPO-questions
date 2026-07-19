@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="uz">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -648,8 +648,8 @@
   <div class="navpill">
     <span class="navbrand">BPO logistics</span>
     <div class="langsw">
-      <button data-lang="ru" class="active">RU</button>
-      <button data-lang="uz">O‘Z</button>
+      <button data-lang="ru">RU</button>
+      <button data-lang="uz" class="active">O‘Z</button>
       <button data-lang="en">EN</button>
     </div>
   </div>
@@ -2298,13 +2298,13 @@ var SECTIONS = [
   kicker:L("Market research · Wave 1","Исследование рынка · Волна 1","Bozor tadqiqoti · 1-to‘lqin"),
   heroTitle:L("Market Pulse: <em>BPO logistics</em><br>Uzbekistan — USA",
               "Пульс рынка: <em>BPO-логистика</em><br>Узбекистан — США",
-              "Bozor pulsi: <em>BPO-logistika</em><br>O‘zbekiston — AQSh"),
-  lead:L("Help us see the industry as it really is — so that new rules are written from facts, not from rumours.",
-         "Помогите увидеть отрасль такой, какая она есть, — чтобы новые правила писались по фактам, а не по слухам.",
-         "Sohani qanday bo‘lsa, shundayligicha ko‘rishga yordam bering — yangi qoidalar mish-mishlarga emas, faktlarga asoslansin."),
-  bodyText:L("We measure sentiment, exposure to fraud, readiness for the US legislative changes, cyber-security and diversification plans. Results are published only in aggregated form, are used solely to design support measures for the industry, and are never shared with third parties.",
-             "Мы замеряем настроения, подверженность мошенничеству, готовность к изменениям законодательства США, кибербезопасность и планы диверсификации. Результаты публикуются только в обобщённом виде, используются исключительно для разработки мер поддержки отрасли и не передаются третьим лицам.",
-             "Biz kayfiyat, firibgarlikka moyillik, AQSh qonunchiligidagi o‘zgarishlarga tayyorlik, kiberxavfsizlik va diversifikatsiya rejalarini o‘lchaymiz. Natijalar faqat umumlashtirilgan holda e’lon qilinadi, faqat sohani qo‘llab-quvvatlash choralari uchun ishlatiladi va uchinchi shaxslarga berilmaydi."),
+              "Bozor nabzi: <em>BPO-logistika</em><br>O‘zbekiston — AQSh"),
+  lead:L("Help us see the industry as it really is — so new rules follow facts, not rumours.",
+         "Помогите увидеть отрасль такой, какая она есть, — чтобы правила писались по фактам, а не по слухам.",
+         "Sohani borligicha ko‘rishga yordam bering — qoidalar mish-mishga emas, faktga asoslansin."),
+  bodyText:L("Fully anonymous. Results are published only in aggregate and used solely to shape support measures for the industry.",
+             "Полностью анонимно. Результаты публикуются только в обобщённом виде и используются исключительно для разработки мер поддержки отрасли.",
+             "To‘liq anonim. Natijalar faqat umumlashtirilgan holda e’lon qilinadi va faqat sohani qo‘llab-quvvatlash choralari uchun ishlatiladi."),
   questions:[
     {id:"S0", type:"single", required:true, big:true,
      label:L("Do you agree to take part in this anonymous survey?","Согласны ли вы принять участие в анонимном опросе?","Ushbu anonim so‘rovnomada qatnashishga rozimisiz?"),
@@ -3016,7 +3016,7 @@ var UI = {
     chipAnon:"Анонимно",
     chipLang:"RU · UZ · EN",
     dragHint:"Потяните, чтобы вращать" },
-  uz:{ title:"Bozor pulsi: BPO-logistika", sub:"Anonim so‘rovnoma · O‘zbekiston — AQSh",
+  uz:{ title:"Bozor nabzi: BPO-logistika", sub:"Anonim so‘rovnoma · O‘zbekiston — AQSh",
     next:"Keyingi", back:"Orqaga", submit:"Yuborish", progress:"Bo‘lim %s / 9",
     errRequired:"Iltimos, ushbu savolga javob bering.",
     errGrid:"Iltimos, har bir qator bo‘yicha javob bering.",
@@ -3097,7 +3097,7 @@ var UI = {
 /* ============================ RUNTIME ============================ */
 /* NOTE: do not name this `history` — that collides with the browser's
    global window.history object and silently breaks navigation. */
-var lang="ru", answers={}, current="S0", navStack=[], done=false, deliveredVia="sheet";
+var lang="uz", answers={}, current="S0", navStack=[], done=false, deliveredVia="sheet";
 var errors={};
 
 function t(o){ return o ? (o[lang]||o.ru||o.en) : ""; }
