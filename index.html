@@ -277,12 +277,43 @@
     .gcell-lab{display:inline;font-size:15.5px;line-height:1.35}
     .gcell.checked{background:var(--accent-soft);box-shadow:inset 3px 0 0 0 var(--accent)}
 
+    /* --- hero on a phone: the whole first screen should fit a handset ---
+       the globe is decorative, so it gives up space first; the cue shrinks to
+       a short stub; vertical rhythm tightens so the consent question is
+       reachable with one swipe rather than three. --- */
+    .hero{gap:20px}
+    body.hero-mode main{padding-top:76px}
+    .globe-wrap{max-width:200px}
+    .globe-hint{font-size:10px}
+    .hero-kicker{font-size:11.5px;letter-spacing:.16em}
+    .hero h1{margin-top:8px}
+    .hero .lead{margin-top:13px}
+    .hero .body{margin-top:11px;line-height:1.55}
+    .chips{gap:8px;margin-top:16px}
+    .chip{font-size:11.5px;padding:7px 11px}
+    .scrollcue{--cueH:38px;margin-top:16px;gap:9px}
+    .scrollcue span{font-size:12px;letter-spacing:.16em}
+    .scrollcue .chev{width:15px;height:15px;border-right-width:3.4px;border-bottom-width:3.4px;
+      margin:-1px 0 0 -7px}
+    /* comfortable thumb targets on the language switch */
+    .langsw button{padding:8px 12px}
+
     /* --- 1-5 scales: anchors above/below, five equal thumb targets --- */
     .scale5{flex-direction:column;align-items:stretch;gap:10px}
     .scale5 .nums{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
     .scale5 label{padding:15px 0;justify-content:center}
     .scale5 .anchor{min-width:0;text-align:left}
     .scale5 .anchor.r{text-align:right}
+  }
+
+  /* ---- small handsets (<=400px): reclaim the last of the vertical space ---- */
+  @media (max-width:400px){
+    main{padding:14px 15px 64px}
+    .globe-wrap{max-width:165px}
+    .card{padding:20px 15px}
+    .navpill{gap:10px;padding:6px 7px 6px 13px}
+    .navbrand{font-size:17px}
+    .langsw button{padding:7px 10px;font-size:12px}
   }
 
   /* ---- busy state on the submit button ---- */
