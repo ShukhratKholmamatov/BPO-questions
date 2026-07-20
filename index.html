@@ -679,6 +679,12 @@
         <span class="gi-badge">PDF</span>
         <span class="gi-txt"><b id="guideT1"></b><i id="guideS1">1.0 MB</i></span>
       </a>
+      <!-- report: href/download/size swap with the language (see paintGuideLabels) -->
+      <a class="guideitem" id="guideA2" href="guides/bpo-report-EN.pdf"
+         download="Report regarding BPO.pdf" target="_blank" rel="noopener">
+        <span class="gi-badge">PDF</span>
+        <span class="gi-txt"><b id="guideT2"></b><i id="guideS2">0.6 MB</i></span>
+      </a>
     </div>
   </div>
 </header>
@@ -3007,9 +3013,10 @@ var UI = {
     fileLimit:"PDF, DOC, DOCX или TXT · до %s МБ · необязательно",
     fileType:"Допустимы только файлы PDF, DOC, DOCX или TXT.",
     fileTooBig:"Файл слишком большой. Максимум %s МБ.",
-    guideBtn:"Гайд",
-    nudge:"Сначала откройте «Гайд» наверху — так вы ответите точнее",
+    guideBtn:"Гайд и отчёт",
+    nudge:"Сначала откройте «Гайд и отчёт» наверху — так вы ответите точнее",
     guideT1:"Справочник по мошенничеству в грузоперевозках",
+    guideT2:"Отчёт по сектору BPO-логистики",
     sending:"Отправка…",
     contactNick:"Имя или ник",
     contactHandle:"Telegram или e-mail",
@@ -3045,9 +3052,10 @@ var UI = {
     fileLimit:"PDF, DOC, DOCX yoki TXT · %s MB gacha · ixtiyoriy",
     fileType:"Faqat PDF, DOC, DOCX yoki TXT fayllar qabul qilinadi.",
     fileTooBig:"Fayl juda katta. Maksimal %s MB.",
-    guideBtn:"Qo‘llanma",
-    nudge:"Avval yuqoridagi «Qo‘llanma»ni oching — shunda aniqroq javob berasiz",
+    guideBtn:"Qo‘llanma va hisobot",
+    nudge:"Avval yuqoridagi «Qo‘llanma va hisobot»ni oching — shunda aniqroq javob berasiz",
     guideT1:"Yuk tashishdagi firibgarlik bo‘yicha qo‘llanma",
+    guideT2:"BPO-logistika sohasi bo‘yicha hisobot",
     sending:"Yuborilmoqda…",
     contactNick:"Ism yoki nik",
     contactHandle:"Telegram yoki e-mail",
@@ -3083,9 +3091,10 @@ var UI = {
     fileLimit:"PDF, DOC, DOCX or TXT · up to %s MB · optional",
     fileType:"Only PDF, DOC, DOCX or TXT files are accepted.",
     fileTooBig:"That file is too large. Maximum %s MB.",
-    guideBtn:"Guide",
-    nudge:"Open “Guide” at the top first — it will help you answer more precisely",
+    guideBtn:"Guide & report",
+    nudge:"Open “Guide & report” at the top first — it will help you answer more precisely",
     guideT1:"Freight fraud handbook",
+    guideT2:"Report on the BPO logistics sector",
     sending:"Sending…",
     contactNick:"Name or nickname",
     contactHandle:"Telegram or e-mail",
@@ -5758,12 +5767,19 @@ var HANDBOOK = {
   uz:{ file:"guides/freight-fraud-handbook-UZ.pdf",  dl:"Yuk tashishdagi firibgarlik qo‘llanmasi.pdf",        size:"1.1 MB" },
   en:{ file:"guides/freight-fraud-handbook-EN.pdf",  dl:"Freight Fraud Handbook.pdf",                         size:"1.1 MB" }
 };
+/* the report exists in RU + UZ + EN — download follows the language toggle. */
+var REPORT = {
+  ru:{ file:"guides/bpo-report-RUS.pdf", dl:"Отчёт к вопросам о секторе BPO.pdf",  size:"0.7 МБ" },
+  uz:{ file:"guides/bpo-report-UZ.pdf",  dl:"BPO masalalari bo‘yicha hisobot.pdf", size:"0.8 MB" },
+  en:{ file:"guides/bpo-report-EN.pdf",  dl:"Report regarding BPO.pdf",            size:"0.6 MB" }
+};
 function paintGuideLabels(){
   var u=UI[lang];
   var l=document.getElementById("guideLabel");
-  var t1=document.getElementById("guideT1");
+  var t1=document.getElementById("guideT1"), t2=document.getElementById("guideT2");
   if(l)  l.textContent  = u.guideBtn;
   if(t1) t1.textContent = u.guideT1;
+  if(t2) t2.textContent = u.guideT2;
   var b=document.getElementById("guideBtn");
   if(b) b.setAttribute("title", u.guideBtn);   /* icon-only on small screens */
 
@@ -5774,6 +5790,11 @@ function paintGuideLabels(){
   var hb=HANDBOOK[lang] || HANDBOOK.en;
   if(a1){ a1.setAttribute("href", enc(hb.file)); a1.setAttribute("download", hb.dl); }
   if(s1){ s1.textContent = hb.size; }
+
+  var a2=document.getElementById("guideA2"), s2=document.getElementById("guideS2");
+  var rp=REPORT[lang] || REPORT.en;
+  if(a2){ a2.setAttribute("href", enc(rp.file)); a2.setAttribute("download", rp.dl); }
+  if(s2){ s2.textContent = rp.size; }
 }
 /* Set once the respondent has actually opened the guides — this retires both the
    nudge and the pill's glow, so it never nags someone who already looked. */
